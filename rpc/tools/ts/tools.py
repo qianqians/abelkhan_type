@@ -3,6 +3,29 @@
 # build by qianqians
 # tools
 
+class TypeType():
+    Original = 0
+    Custom = 1
+    Array = 2
+
+def check_type(typestr):
+    if typestr == 'int':
+        return TypeType.Original
+    elif typestr == 'string':
+        return TypeType.Original
+    elif typestr == 'float':
+        return TypeType.Original
+    elif typestr == 'bool':
+        return TypeType.Original
+    elif typestr in dependent_struct:
+	    return TypeType.Custom
+    elif typestr in dependent_enum:
+    	return TypeType.Original
+    elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
+        return TypeType.Array
+
+    raise Exception("non exist type:%s" % _type)
+
 def convert_type(_type, dependent_struct, dependent_enum):
     if typestr == 'int':
         return 'number'

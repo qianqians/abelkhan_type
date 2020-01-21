@@ -9,10 +9,14 @@ import postprocess
 
 text = """
 module name{
-   func1 ntf();
-   func2 req(int i) rsp() err(int);
+   void func1();
+   void func2(int i);
    func3 ntf(int i, string str);
    func4 ntf(int i, array a, bool b, float f, string s);
+}
+
+struct kv{
+    int k1;
 }
 """
 
@@ -33,8 +37,8 @@ def batch(inputdir):
             _import, module, enum, struct = parser(genfilestr)
             pretreatmentdata.append(postprocess.pretreatment(fname, _import, module, enum, struct))
             
-    postprocess.process(pretreatmentdata)
-    return pretreatmentdata
+    modules_index = postprocess.process(pretreatmentdata)
+    return pretreatmentdata, modules_index
     
 _import, module, enum, struct = parser(text)
 print(_import)

@@ -9,7 +9,7 @@ export class Icaller{
     }
 
     public call_module_method(method_index:number, argvs:any){
-        var _event = new Array(this.module_index, method_index, argvs);
+        var _event = [this.module_index, method_index, argvs];
         this.ch.push(_event); 
     }
 }
