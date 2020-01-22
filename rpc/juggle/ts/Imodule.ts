@@ -1,12 +1,10 @@
-import {event_closure} from "event_closure"
-
 export let current_ch = null;
 
-export class Imodule extends event_closure {
+export class Imodule{
     public module_name : string;
     public module_index : number;
+    public cb : ()=>void | null;
     constructor(_module_name:string, _module_index:number){
-        super();
         this.module_name = _module_name;
         this.module_index = _module_index;
     }

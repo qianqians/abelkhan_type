@@ -11,12 +11,22 @@ def gen_module_module(module_name, module_index, funcs, dependent_struct, depend
         code_constructor += "    constructor(){\n"
         code_constructor += "        super(" + module_name + ", " + str(module_index) + ");\n"
         
+        code_constructor_cb = ""
         code_func = ""
         func_index = 1
         for i in funcs:
                 func_name = i[1]
                 code_constructor += "        this.reg_method(" + str(func_index) + ", " + func_name + ");\n"
+                code_constructor_cb += "        cb_" + func_name + " = null;\n"
                 
+                code_func += "    public cb_" + func_name + " : ("
+                count = 0
+                for _type, _name in i[2]:
+                        code_func += _name + ":" + tools.convert_type(_type)
+                        count = count + 1
+                        if count < len(i[2]):
+                                code += ", "
+                code_func += ")=>void | null;"
                 code_func += "    " + func_name + "(inArray:any[]){\n"
                 _argv_uuid = uuid.uuid1()
                 _argv_uuid = '_'.join(_argv_uuid.split('-'))
@@ -47,14 +57,16 @@ def gen_module_module(module_name, module_index, funcs, dependent_struct, depend
                                 code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
                         count += 1
                 code_func += "        "
-                code_func += "        this.call_event(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n"
+                code_func += "        if (cb_" + func_name + "){\n"
+                code_func += "            cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
+                code_func += "        }\n"
                 code_func += "    }\n\n"
                 func_index += 1
         
-        code_constructor += "    }\n\n"
+        code_constructor_end = "    }\n\n"
         code = "}\n"
         
-        return code_constructor + code_func + code
+        return code_constructor + code_constructor_cb + code_constructor_end + code_func + code
         
 
 def genmodule(pretreatment, modules_index):
