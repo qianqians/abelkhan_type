@@ -27,7 +27,7 @@ def gen_module_module(module_name, module_index, funcs, dependent_struct, depend
                         if type_ == tools.TypeType.Original:
                                 code += "        _argv_" + _argv_uuid + ".push(inArray[" + str(count) + "]);\n"
                         elif type_ == tools.TypeType.Custom:
-                                code += "        _argv_" + _argv_uuid + ".push(" + _type + "_to_protcol(inArray[" + str(count) + "]));\n"
+                                code += "        _argv_" + _argv_uuid + ".push(protcol_to_" + _type + "(inArray[" + str(count) + "]));\n"
                         elif type_ == tools.TypeType.Array:
                                 _array_uuid = uuid.uuid1()
                                 _array_uuid = '_'.join(_array_uuid.split('-'))
@@ -40,7 +40,7 @@ def gen_module_module(module_name, module_index, funcs, dependent_struct, depend
                                 if array_type_ == tools.TypeType.Original:
                                         code += "            _array_" + _array_uuid + ".push(v_" + _v_uuid + ");\n"
                                 elif array_type_ == tools.TypeType.Custom:
-                                        code += "            _array_" + _array_uuid + ".push(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                                        code += "            _array_" + _array_uuid + ".push(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
                                 elif array_type_ == tools.TypeType.Array:
                                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                                 code += "        }\n"                                                     
