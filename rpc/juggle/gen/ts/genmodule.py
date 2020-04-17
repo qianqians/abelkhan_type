@@ -25,36 +25,36 @@ def gen_module_module(module_name, module_index, funcs, dependent_struct, depend
                         code_func += _name + ":" + tools.convert_type(_type)
                         count = count + 1
                         if count < len(i[2]):
-                                code += ", "
-                code_func += ")=>void | null;"
+                                code_func += ", "
+                code_func += ")=>void | null;\n"
                 code_func += "    " + func_name + "(inArray:any[]){\n"
                 _argv_uuid = uuid.uuid1()
                 _argv_uuid = '_'.join(_argv_uuid.split('-'))
-                code_func += "        let _argv_" + _argv_uuid + " = [];\n"
+                code_func += "        let _argv_" + _argv_uuid + ":any[] = [];\n"
                 count = 0
                 for _type, _name in i[2]:
                         type_ = tools.check_type(_type)
                         if type_ == tools.TypeType.Original:
-                                code += "        _argv_" + _argv_uuid + ".push(inArray[" + str(count) + "]);\n"
+                                code_func += "        _argv_" + _argv_uuid + ".push(inArray[" + str(count) + "]);\n"
                         elif type_ == tools.TypeType.Custom:
-                                code += "        _argv_" + _argv_uuid + ".push(protcol_to_" + _type + "(inArray[" + str(count) + "]));\n"
+                                code_func += "        _argv_" + _argv_uuid + ".push(protcol_to_" + _type + "(inArray[" + str(count) + "]));\n"
                         elif type_ == tools.TypeType.Array:
                                 _array_uuid = uuid.uuid1()
                                 _array_uuid = '_'.join(_array_uuid.split('-'))
-                                code += "        let _array_" + _array_uuid + "":any[] = [];"
+                                code_func += "        let _array_" + _array_uuid + ":any[] = [];"
                                 _v_uuid = uuid.uuid1()
                                 _v_uuid = '_'.join(_v_uuid.split('-'))
-                                code += "        for(let v_" + _v_uuid + " of inArray[" + str(count) + "]){\n"
+                                code_func += "        for(let v_" + _v_uuid + " of inArray[" + str(count) + "]){\n"
                                 array_type = _type[:-2]
                                 array_type_ = tools.check_type(array_type)
                                 if array_type_ == tools.TypeType.Original:
-                                        code += "            _array_" + _array_uuid + ".push(v_" + _v_uuid + ");\n"
+                                        code_func += "            _array_" + _array_uuid + ".push(v_" + _v_uuid + ");\n"
                                 elif array_type_ == tools.TypeType.Custom:
-                                        code += "            _array_" + _array_uuid + ".push(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                                        code_func += "            _array_" + _array_uuid + ".push(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
                                 elif array_type_ == tools.TypeType.Array:
                                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
-                                code += "        }\n"                                                     
-                                code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
+                                code_func += "        }\n"                                                     
+                                code_func += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
                         count += 1
                 code_func += "        if (cb_" + func_name + "){\n"
                 code_func += "            cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
@@ -76,6 +76,6 @@ def genmodule(pretreatment, modules_index):
         
         code = "/*this module code is codegen by abelkhan codegen for typescript*/\n"
         for module_name, funcs in modules.items():
-                code += gen_module_caller(module_name, modules_index[module_name], funcs, dependent_struct, dependent_enum)
+                code += gen_module_module(module_name, modules_index[module_name], funcs, dependent_struct, dependent_enum)
                 
         return code

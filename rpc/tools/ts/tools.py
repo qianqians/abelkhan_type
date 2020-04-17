@@ -8,7 +8,7 @@ class TypeType():
     Custom = 1
     Array = 2
 
-def check_type(typestr):
+def check_type(typestr, dependent_struct, dependent_enum):
     if typestr == 'int':
         return TypeType.Original
     elif typestr == 'string':
@@ -24,9 +24,9 @@ def check_type(typestr):
     elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
         return TypeType.Array
 
-    raise Exception("non exist type:%s" % _type)
+    raise Exception("non exist type:%s" % typestr)
 
-def convert_type(_type, dependent_struct, dependent_enum):
+def convert_type(typestr, dependent_struct, dependent_enum):
     if typestr == 'int':
         return 'number'
     elif typestr == 'string':
@@ -44,5 +44,5 @@ def convert_type(_type, dependent_struct, dependent_enum):
         array_type = convert_type(array_type)
         return array_type+'[]'
 
-    raise Exception("non exist type:%s" % _type)
+    raise Exception("non exist type:%s" % typestr)
     

@@ -40,7 +40,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
         elif type_ == tools.TypeType.Array:
             _array_uuid = uuid.uuid1()
             _array_uuid = '_'.join(_array_uuid.split('-'))
-            code += "    let _array_" + _array_uuid + "":any[] = [];"
+            code += "    let _array_" + _array_uuid + ":any[] = [];"
             _v_uuid = uuid.uuid1()
             _v_uuid = '_'.join(_v_uuid.split('-'))
             code += "    for(let v_" + _v_uuid + " of _struct." + value + "){\n"
@@ -80,8 +80,8 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"
-        code += "    "
-    code += "    let _struct : new " + struct_name + "(\n
+        count = count + 1
+    code += "    let _struct : new " + struct_name + "(\n"
     count = 0
     for key, value in elems:
         code += "        _" + value
