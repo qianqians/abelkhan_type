@@ -32,20 +32,20 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
     code = "export function " + struct_name + "_to_protcol(_struct:" + struct_name + "){\n"
     code += "    let _protocol:any[] = [];\n"
     for key, value in elems:
-        type_ = tools.check_type(key)
+        type_ = tools.check_type(key, dependent_struct, dependent_enum)
         if type_ == tools.TypeType.Original:
             code += "    _protocol.push(_struct." + value + ");\n"
         elif type_ == tools.TypeType.Custom:
             code += "    _protocol.push(" + key + "_to_protcol(_struct." + value + "));\n"
         elif type_ == tools.TypeType.Array:
-            _array_uuid = uuid.uuid1()
+            _array_uuid = str(uuid.uuid1())
             _array_uuid = '_'.join(_array_uuid.split('-'))
             code += "    let _array_" + _array_uuid + ":any[] = [];"
-            _v_uuid = uuid.uuid1()
+            _v_uuid = str(uuid.uuid1())
             _v_uuid = '_'.join(_v_uuid.split('-'))
             code += "    for(let v_" + _v_uuid + " of _struct." + value + "){\n"
             array_type = key[:-2]
-            array_type_ = tools.check_type(array_type)
+            array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
             if array_type_ == tools.TypeType.Original:
                 code += "        _array_" + _array_uuid + ".push(v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
@@ -61,16 +61,16 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code = "export function protcol_to_" + struct_name + "(_protocol:any[]){\n"
     count = 0
     for key, value in elems:
-        type_ = tools.check_type(key)
+        type_ = tools.check_type(key, dependent_struct, dependent_enum)
         if type_ == tools.TypeType.Original:
             code += "    let _" + value + " = _protocol[" + str(count) + "] as " + key + ";\n"
         elif type_ == tools.TypeType.Custom:
             code += "    let _" + value + " = protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
         elif type_ == tools.TypeType.Array:
             array_type = key[:-2]
-            array_type_ = tools.check_type(array_type)
+            array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
             code += "    let _" + value + ":" + array_type + "[] = [];\n"
-            _v_uuid = uuid.uuid1()
+            _v_uuid = str(uuid.uuid1())
             _v_uuid = '_'.join(_v_uuid.split('-'))
             code += "    for(let v_" + _v_uuid + " of _protocol[" + str(count) + "]){\n"
             if array_type_ == tools.TypeType.Original:
@@ -101,8 +101,8 @@ def genstruct(pretreatment):
     
     code = "/*this struct code is codegen by abelkhan codegen for typescript*/\n"
     for struct_name, elems in struct.items():
-        code += genmainstruct(struct_name, elems, dependent_struct, dependent_enum);
-        code += genstructprotocol(struct_name, elems, dependent_struct, dependent_enum);
-        code += genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum);
+        code += genmainstruct(struct_name, elems, dependent_struct, dependent_enum)
+        code += genstructprotocol(struct_name, elems, dependent_struct, dependent_enum)
+        code += genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum)
 
     return code

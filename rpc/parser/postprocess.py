@@ -54,11 +54,3 @@ def process(pretreatmentdata):
             e = getImportElem(_import, pretreatmentdata)
             elem.dependent_struct.extend(e.def_struct)
             elem.dependent_enum.extend(e.def_enum)      
-            
-    modules_index = {}
-    index = 1
-    for m in modules:
-        modules_index[m] = index
-        index += 1
-        
-    return modules_index

@@ -9,11 +9,19 @@ class TypeType():
     Array = 2
 
 def check_type(typestr, dependent_struct, dependent_enum):
-    if typestr == 'int':
+    if typestr == 'int32':
+        return TypeType.Original
+    elif typestr == 'int64':
+        return TypeType.Original
+    elif typestr == 'uint32':
+        return TypeType.Original
+    elif typestr == 'uint64':
         return TypeType.Original
     elif typestr == 'string':
         return TypeType.Original
     elif typestr == 'float':
+        return TypeType.Original
+    elif typestr == 'double':
         return TypeType.Original
     elif typestr == 'bool':
         return TypeType.Original
@@ -27,11 +35,19 @@ def check_type(typestr, dependent_struct, dependent_enum):
     raise Exception("non exist type:%s" % typestr)
 
 def convert_type(typestr, dependent_struct, dependent_enum):
-    if typestr == 'int':
+    if typestr == 'int32':
+        return 'number'
+    elif typestr == 'int64':
+        return 'number'
+    elif typestr == 'uint32':
+        return 'number'
+    elif typestr == 'uint64':
         return 'number'
     elif typestr == 'string':
         return 'string'
     elif typestr == 'float':
+        return 'number'
+    elif typestr == 'double':
         return 'number'
     elif typestr == 'bool':
         return 'boolean'
@@ -41,7 +57,7 @@ def convert_type(typestr, dependent_struct, dependent_enum):
     	return typestr
     elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
         array_type = typestr[:-2]
-        array_type = convert_type(array_type)
+        array_type = convert_type(array_type, dependent_struct, dependent_enum)
         return array_type+'[]'
 
     raise Exception("non exist type:%s" % typestr)
