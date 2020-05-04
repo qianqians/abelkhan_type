@@ -102,8 +102,10 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
 
             cb_code += "    public map_" + func_name + ":Map<string, cb_" + func_name + ">;\n"
             cb_code_constructor += "        this.map_" + func_name + " = new Map<string, cb_" + func_name + ">();\n"
+            cb_code_constructor += "        this.reg_method(\"" + func_name + "_rsp\", this." + func_name + "_rsp.bind(this));\n"
+            cb_code_constructor += "        this.reg_method(\"" + func_name + "_err\", this." + func_name + "_err.bind(this));\n"
 
-            cb_code_section += "    " + func_name + "_rsp(inArray:any[]){\n"
+            cb_code_section += "    public " + func_name + "_rsp(inArray:any[]){\n"
             cb_code_section += "        let uuid = inArray[0];\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
@@ -138,7 +140,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_code_section += "        this.map_" + func_name + ".delete(uuid);\n"
             cb_code_section += "    }\n"
 
-            cb_code_section += "    " + func_name + "_err(inArray:any[]){\n"
+            cb_code_section += "    public " + func_name + "_err(inArray:any[]){\n"
             cb_code_section += "        let uuid = inArray[0];\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))

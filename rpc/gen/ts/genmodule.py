@@ -112,11 +112,11 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
                 count += 1
 
-            code_func += "        this.modules.rsp = new rsp_" + func_name + "(this.modules.current_ch, _cb_uuid);\n"
+            code_func += "        this.rsp = new rsp_" + func_name + "(this.current_ch, _cb_uuid);\n"
             code_func += "        if (cb_" + func_name + "){\n"
             code_func += "            cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
             code_func += "        }\n"
-            code_func += "        this.modules.rsp = null;\n"
+            code_func += "        this.rsp = null;\n"
             code_func += "    }\n\n"
 
             rsp_code += "export class rsp_" + func_name + " extends abelkhan.Icaller {\n"

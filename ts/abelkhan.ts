@@ -23,8 +23,12 @@ export class Imodule{
         this.methods.set(method_name, method);
     }
     
-    public process_event(_event:any){
+    public current_ch:any = null;
+    public rsp:any = null;
+    public process_event(_ch:any, _event:any){
+        this.current_ch = _ch;
         this.methods.get(_event[1]).apply(this, [_event[2]]);
+        this.current_ch = null;
     }
 
 }
@@ -36,11 +40,7 @@ export class modulemng{
         this.module_set.set(_module.module_name, _module);
     }
 
-    public current_ch:any = null;
-    public rsp:any = null;
     public process_event(_ch:any, _event:any){
-        this.current_ch = _ch;
-        this.module_set.get(_event[0]).process_event(_event);
-        this.current_ch = null;
+        this.module_set.get(_event[0]).process_event(_ch, _event);
     }
 }
