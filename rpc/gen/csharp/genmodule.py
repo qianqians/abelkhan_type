@@ -125,7 +125,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "        rsp = null;\n"
             code_func += "    }\n\n"
 
-            rsp_code += "    public class rsp_" + func_name + " : abelkhan.Icaller {\n"
+            rsp_code += "    public class rsp_" + func_name + " : abelkhan.Response {\n"
             rsp_code += "    private ch : any;\n"
             rsp_code += "    private uuid : string;\n"
             rsp_code += "    rsp_" + func_name + "(_ch:any, _uuid:string) : base(\"rsp_cb_" + module_name + "\", _ch)\n"

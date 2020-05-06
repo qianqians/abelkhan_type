@@ -49,6 +49,8 @@ namespace abelkhan
     }
 
     public class Response{
+        public Response(String _module_name, Ichannel _ch) : base(_module_name, _ch){ 
+        }
     }
 
     public class Imodule
