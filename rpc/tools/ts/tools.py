@@ -67,13 +67,13 @@ def convert_type(typestr, dependent_struct, dependent_enum):
         _import = get_import(typestr, dependent_struct)
         if _import == "":
             return typestr
-        else
+        else:
             return _import + "." + typestr
     elif check_in_dependent(typestr, dependent_enum):
         _import = get_import(typestr, dependent_enum)
     	if _import == "":
             return typestr
-        else
+        else:
             return _import + "." + typestr
     elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
         array_type = typestr[:-2]
