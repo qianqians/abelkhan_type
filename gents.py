@@ -27,7 +27,7 @@ def gen(inputdir, outputdir):
     if not os.path.isdir(outputdir):
         os.mkdir(outputdir)
 
-    pretreatmentdata = jparser.batch()
+    pretreatmentdata = jparser.batch(inputdir)
     for pretreatment in pretreatmentdata:
         code = gen_import(pretreatment._import)
         code += genenum.genenum(pretreatment)
