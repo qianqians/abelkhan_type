@@ -34,7 +34,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "    public" + func_name + "("
             count = 0
             for _type, _name in i[2]:
-                code += _name + ":" + tools.convert_type(_type)
+                code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count = count + 1
                 if count < len(i[2]):
                     code += ", "
@@ -79,7 +79,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             rsp_fn = "("
             count = 0
             for _type, _name in i[4]:
-                rsp_fn += _name + ":" + tools.convert_type(_type)
+                rsp_fn += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count += 1
                 if count < len(i[4]):
                     rsp_fn += ", "
@@ -87,7 +87,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             err_fn = "("
             count = 0
             for _type, _name in i[6]:
-                err_fn += _name + ":" + tools.convert_type(_type)
+                err_fn += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count += 1
                 if count < len(i[6]):
                     err_fn += ", "
@@ -202,7 +202,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "    public" + func_name + "("
             count = 0
             for _type, _name in i[2]:
-                code += _name + ":" + tools.convert_type(_type)
+                code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count = count + 1
                 if count < len(i[2]):
                     code += ", "

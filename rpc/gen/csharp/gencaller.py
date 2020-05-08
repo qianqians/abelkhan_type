@@ -34,7 +34,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "    public" + func_name + "("
             count = 0
             for _type, _name in i[2]:
-                code += _name + ":" + tools.convert_type(_type)
+                code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count = count + 1
                 if count < len(i[2]):
                     code += ", "
@@ -72,7 +72,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_func += "        public delegate void " + func_name + "_handle_cb("
             count = 0
             for _type, _name in i[4]:
-                cb_func += tools.convert_type(_type) + " " + _name 
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
                 if count < len(i[4]):
                     cb_func += ", "
@@ -82,7 +82,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_func += "        public delegate void " + func_name + "_handle_err("
             count = 0
             for _type, _name in i[6]:
-                cb_func += tools.convert_type(_type) + " " + _name
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
                 count = count + 1
                 if count < len(i[6]):
                     cb_func += ", "
@@ -183,7 +183,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "    public cb_" + func_name + " " + func_name + "("
             count = 0
             for _type, _name in i[2]:
-                code += tools.convert_type(_type) + " " + _name 
+                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
                 if count < len(i[2]):
                     code += ", "

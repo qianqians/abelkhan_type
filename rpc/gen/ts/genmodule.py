@@ -28,7 +28,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "    public cb_" + func_name + " : ("
             count = 0
             for _type, _name in i[2]:
-                code_func += _name + ":" + tools.convert_type(_type)
+                code_func += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count += 1
                 if count < len(i[2]):
                     code_func += ", "
@@ -83,7 +83,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "    public cb_" + func_name + " : ("
             count = 0
             for _type, _name in i[2]:
-                code_func += _name + ":" + tools.convert_type(_type)
+                code_func += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count += 1
                 if count < len(i[2]):
                     code_func += ", "
@@ -145,7 +145,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
 
             rsp_code += "    public rsp("
             for _type, _name in i[4]:
-                rsp_code += _name + ":" + tools.convert_type(_type)
+                rsp_code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count = count + 1
                 if count < len(i[4]):
                     rsp_code += ", "
@@ -190,7 +190,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "    err("
             count = 0
             for _type, _name in i[6]:
-                rsp_code += _name + ":" + tools.convert_type(_type)
+                rsp_code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
                 count = count + 1
                 if count < len(i[6]):
                     rsp_code += ", "
