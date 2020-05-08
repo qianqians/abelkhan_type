@@ -39,7 +39,7 @@ def batch(inputdir):
     postprocess.process(pretreatmentdata)
     return pretreatmentdata
     
-_#import, module, enum, struct = parser(text)
+#_import, module, enum, struct = parser(text)
 #print(_import)
 #print(module)
 #print(enum)
