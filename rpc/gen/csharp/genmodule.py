@@ -41,7 +41,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if type_ == tools.TypeType.Original:
                     code_func += "        var _" + _name + " = (" + _type_ + ")inArray[" + str(count) + "];\n"
                 elif type_ == tools.TypeType.Custom:
-                    code_func += "        var _" + _name + " = " _type + ".protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    code_func += "        var _" + _name + " = " + _type + ".protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
