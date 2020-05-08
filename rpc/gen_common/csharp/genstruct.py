@@ -77,7 +77,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
             if array_type_ == tools.TypeType.Original:
                 code += "        _" + value + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _" + value + ".Add(" array_type + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                code += "        _" + value + ".Add(" + array_type + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"
