@@ -72,8 +72,8 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
                 count += 1
 
-            code_func += "        if (cb_" + func_name + "){\n"
-            code_func += "            cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
+            code_func += "        if (this.cb_" + func_name + "){\n"
+            code_func += "            this.cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
             code_func += "        }\n"
             code_func += "    }\n\n"
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
