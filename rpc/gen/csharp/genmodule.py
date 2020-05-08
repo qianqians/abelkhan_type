@@ -172,7 +172,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "    err("
             count = 0
             for _type, _name in i[6]:
-                rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + (_type)_name
+                rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
                 count = count + 1
                 if count < len(i[6]):
                     rsp_code += ", "
