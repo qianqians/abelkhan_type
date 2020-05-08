@@ -4,10 +4,10 @@
 # genjs
 
 import sys
-sys.path.append("./parser")
-sys.path.append("./tools/ts")
-sys.path.append("./gen_common/ts")
-sys.path.append("./gen/ts")
+sys.path.append("./rpc/parser")
+sys.path.append("./rpc/tools/ts")
+sys.path.append("./rpc/gen_common/ts")
+sys.path.append("./rpc/gen/ts")
 
 import os
 import jparser
