@@ -19,6 +19,7 @@ import genmodule
 
 def gen_import(_import):
     code = "import abelkhan = require(\"abelkhan\");\n"
+    code += "import uuidv1 = require('uuid/v1');\n"
     for _i in _import:
         code += "import " + _i + " = require(\"./" + _i + "\");\n"
     return code

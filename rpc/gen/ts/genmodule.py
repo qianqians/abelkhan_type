@@ -231,6 +231,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
             rsp_code += "        this.call_module_method(\"" + func_name + "_err\", _argv_" + _argv_uuid + ");\n"
             rsp_code += "    }\n\n"
+            rsp_code += "}\n\n"
 
         else:
             raise "func:%s wrong rpc type:%s must req or ntf" % (func_name, i[1])
@@ -238,7 +239,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
     code_constructor_end = "    }\n\n"
     code = "}\n"
         
-    return code_constructor + code_constructor_cb + code_constructor_end + rsp_code + code_func + code
+    return code_constructor + code_constructor_cb + code_constructor_end + code_func + code + rsp_code 
         
 
 def genmodule(pretreatment):
