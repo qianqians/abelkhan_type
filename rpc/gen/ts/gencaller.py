@@ -31,7 +31,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
         func_name = i[0]
 
         if i[1] == "ntf":
-            code += "    public" + func_name + "("
+            code += "    public " + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
@@ -199,7 +199,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_code_section += "        this.map_" + func_name + ".delete(uuid);\n"
             cb_code_section += "    }\n"
 
-            code += "    public" + func_name + "("
+            code += "    public " + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
