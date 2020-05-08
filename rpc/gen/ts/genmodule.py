@@ -136,7 +136,6 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "    }\n\n"
 
             rsp_code += "export class rsp_" + func_name + " extends abelkhan.Icaller {\n"
-            rsp_code += "    private ch : any;\n"
             rsp_code += "    private uuid : string;\n"
             rsp_code += "    constructor(_ch:any, _uuid:string){\n"
             rsp_code += "        super(\"rsp_cb_" + module_name + "\", _ch);\n"
