@@ -8,6 +8,18 @@ class TypeType():
     Custom = 1
     Array = 2
 
+def check_in_dependent(typestr, dependent):
+    for _type, _import in dependent:
+        if _type == typestr:
+            return True
+    return False
+
+def get_import(typestr, dependent):
+    for _type, _import in dependent:
+        if _type == typestr:
+            return _import
+    return ""
+
 def check_type(typestr, dependent_struct, dependent_enum):
     if typestr == 'int32':
         return TypeType.Original
@@ -25,9 +37,9 @@ def check_type(typestr, dependent_struct, dependent_enum):
         return TypeType.Original
     elif typestr == 'bool':
         return TypeType.Original
-    elif typestr in dependent_struct:
+    elif check_in_dependent(typestr, dependent_struct):
 	    return TypeType.Custom
-    elif typestr in dependent_enum:
+    elif check_in_dependent(typestr, dependent_enum):
     	return TypeType.Original
     elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
         return TypeType.Array
@@ -51,10 +63,18 @@ def convert_type(typestr, dependent_struct, dependent_enum):
         return 'number'
     elif typestr == 'bool':
         return 'boolean'
-    elif typestr in dependent_struct:
-	    return typestr
-    elif typestr in dependent_enum:
-    	return typestr
+    elif check_in_dependent(typestr, dependent_struct):
+        _import = get_import(typestr, dependent_struct)
+        if _import = "":
+            return typestr
+        else
+            return _import + "." + typestr
+    elif check_in_dependent(typestr, dependent_enum):
+        _import = get_import(typestr, dependent_enum)
+    	if _import = "":
+            return typestr
+        else
+            return _import + "." + typestr
     elif typestr[len(typestr)-2] == '[' and typestr[len(typestr)-1] == ']':
         array_type = typestr[:-2]
         array_type = convert_type(array_type, dependent_struct, dependent_enum)

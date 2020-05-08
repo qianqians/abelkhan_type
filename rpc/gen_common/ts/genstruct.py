@@ -36,7 +36,11 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
         if type_ == tools.TypeType.Original:
             code += "    _protocol.push(_struct." + value + ");\n"
         elif type_ == tools.TypeType.Custom:
-            code += "    _protocol.push(" + key + "_to_protcol(_struct." + value + "));\n"
+            _import = tools.get_import(key, dependent_struct)
+            if _import == "":
+                code += "    _protocol.push(" + key + "_to_protcol(_struct." + value + "));\n"
+            else:
+                code += "    _protocol.push(" + _import + "." + key + "_to_protcol(_struct." + value + "));\n"
         elif type_ == tools.TypeType.Array:
             _array_uuid = str(uuid.uuid1())
             _array_uuid = '_'.join(_array_uuid.split('-'))
@@ -49,7 +53,11 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
             if array_type_ == tools.TypeType.Original:
                 code += "        _array_" + _array_uuid + ".push(v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _array_" + _array_uuid + ".push(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                _import = tools.get_import(array_type, dependent_struct)
+                if _import == "":
+                    code += "        _array_" + _array_uuid + ".push(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                else:
+                    code += "        _array_" + _array_uuid + ".push(" + _import + "." + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"
@@ -65,7 +73,11 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
         if type_ == tools.TypeType.Original:
             code += "    let _" + value + " = _protocol[" + str(count) + "] as " + key + ";\n"
         elif type_ == tools.TypeType.Custom:
-            code += "    let _" + value + " = protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
+            _import = tools.get_import(key, dependent_struct)
+            if _import == "":
+                code += "    let _" + value + " = protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
+            else:
+                code += "    let _" + value + " = " + _import + ".protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
         elif type_ == tools.TypeType.Array:
             array_type = key[:-2]
             array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
@@ -76,7 +88,11 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
             if array_type_ == tools.TypeType.Original:
                 code += "        _" + value + ".push(v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _" + value + ".push(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                _import = tools.get_import(array_type, dependent_struct)
+                if _import == "":
+                    code += "        _" + value + ".push(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                else:
+                    code += "        _" + value + ".push(" + _import + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"

@@ -7,7 +7,6 @@ import uuid
 import tools
 
 def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
-    #code_constructor = "import abelkhan = require(\"abelkhan\");\n"
     code_constructor = "    public class " + module_name + "_module : abelkhan.Imodule {\n"
     code_constructor += "    private modules:abelkhan.modulemng;\n"
     code_constructor += "    " + module_name + "_module(abelkhan.modulemng _modules) : base(\"" + module_name + "\")\n"
@@ -42,7 +41,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if type_ == tools.TypeType.Original:
                     code_func += "        var _" + _name + " = (" + _type_ + ")inArray[" + str(count) + "];\n"
                 elif type_ == tools.TypeType.Custom:
-                    code_func += "        var _" + _name + " = protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    code_func += "        var _" + _name + " = " _type + ".protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
@@ -54,7 +53,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     if array_type_ == tools.TypeType.Original:
                         code_func += "            _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code_func += "            _" + _name + ".Add(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                        code_func += "            _" + _name + ".Add(" + array_type + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code_func += "        }\n"                                                     
@@ -93,7 +92,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if type_ == tools.TypeType.Original:
                     code_func += "        var _" + _name + " = (" + _type_ + ")inArray[" + str(count) + "];\n"
                 elif type_ == tools.TypeType.Custom:
-                    code_func += "        var _" + _name + " = protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    code_func += "        var _" + _name + " = " + _type + ".protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
@@ -105,7 +104,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     if array_type_ == tools.TypeType.Original:
                         code_func += "            _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code_func += "            _" + _name + ".Add(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                        code_func += "            _" + _name + ".Add(" + array_type + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code_func += "        }\n"                                                     
@@ -149,7 +148,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if type_ == tools.TypeType.Original:
                     rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _name + ");\n"
                 elif type_ == tools.TypeType.Custom:
-                    rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _type + "_to_protcol(" + _name + "));\n"
+                    rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _type + "." + _type + "_to_protcol(" + _name + "));\n"
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
@@ -162,7 +161,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     if array_type_ == tools.TypeType.Original:
                         rsp_code += "            _array_" + _array_uuid + ".Add(v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        rsp_code += "            _array_" + _array_uuid + ".Add(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                        rsp_code += "            _array_" + _array_uuid + ".Add(" + array_type + "." + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     rsp_code += "        }\n"                                                     
@@ -187,7 +186,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if type_ == tools.TypeType.Original:
                     rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _name + ");\n"
                 elif type_ == tools.TypeType.Custom:
-                    rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _type + "_to_protcol(" + _name + "));\n"
+                    rsp_code += "        _argv_" + _argv_uuid + ".Add(" + _type + "." + _type + "_to_protcol(" + _name + "));\n"
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
@@ -200,7 +199,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     if array_type_ == tools.TypeType.Original:
                         rsp_code += "            _array_" + _array_uuid + ".Add(v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        rsp_code += "            _array_" + _array_uuid + ".Add(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                        rsp_code += "            _array_" + _array_uuid + ".Add(" + array_type + "." + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     rsp_code += "        }\n"                                                     
@@ -212,9 +211,9 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             raise "func:%s wrong rpc type:%s must req or ntf" % (func_name, i[1])
 
     code_constructor_end = "    }\n\n"
-    code = "}\n"
+    code = "    }\n"
         
-    return code_constructor + code_constructor_cb + code_constructor_end + rsp_code + code_func + code
+    return rsp_code + code_constructor + code_constructor_cb + code_constructor_end + code_func + code
         
 
 def genmodule(pretreatment):

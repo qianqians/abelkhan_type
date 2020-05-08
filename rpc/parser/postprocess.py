@@ -44,13 +44,17 @@ def process(pretreatmentdata):
     for elem in pretreatmentdata:
         for k, v in elem.enum.items():
             elem.def_enum.append(k)
-        elem.dependent_enum.extend(elem.def_enum) 
+        for _type in elem.def_enum:
+            elem.dependent_enum.append((_type, "")) 
         for k, v in elem.struct.items():
-            elem.def_struct.append(k)   
-        elem.dependent_struct.extend(elem.def_struct)   
+            elem.def_struct.append(k)
+        for _type in elem.def_struct:
+            elem.dependent_struct.append((_type, ""))   
     
     for elem in pretreatmentdata:
         for _import in elem._import:
             e = getImportElem(_import, pretreatmentdata)
-            elem.dependent_struct.extend(e.def_struct)
-            elem.dependent_enum.extend(e.def_enum)      
+            for _type in e.def_struct:
+                elem.dependent_struct.append((_type, _import))
+            for _type in e.def_enum:
+                elem.dependent_enum.append((_type, _import))      

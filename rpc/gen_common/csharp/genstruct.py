@@ -28,14 +28,14 @@ def genmainstruct(struct_name, elems, dependent_struct, dependent_enum):
     return code
 
 def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
-    code = "    public JArray " + struct_name + "_to_protcol(_struct:" + struct_name + "){\n"
+    code = "    public static JArray " + struct_name + "_to_protcol(_struct:" + struct_name + "){\n"
     code += "        var _protocol = new JArray();\n"
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)
         if type_ == tools.TypeType.Original:
             code += "    _protocol.Add(_struct." + value + ");\n"
         elif type_ == tools.TypeType.Custom:
-            code += "    _protocol.Add(" + key + "_to_protcol(_struct." + value + "));\n"
+            code += "    _protocol.Add(" + key + "." + key + "_to_protcol(_struct." + value + "));\n"
         elif type_ == tools.TypeType.Array:
             _array_uuid = str(uuid.uuid1())
             _array_uuid = '_'.join(_array_uuid.split('-'))
@@ -48,7 +48,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
             if array_type_ == tools.TypeType.Original:
                 code += "        _array_" + _array_uuid + ".Add(v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _array_" + _array_uuid + ".Add(" + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
+                code += "        _array_" + _array_uuid + ".Add(" + array_type + "." + array_type + "_to_protcol(v_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"
@@ -57,7 +57,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
     code += "    }\n"
 
 def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
-    code = "    public " + struct_name + " protcol_to_" + struct_name + "(JArray _protocol){\n"
+    code = "    public static" + struct_name + " protcol_to_" + struct_name + "(JArray _protocol){\n"
     count = 0
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)
@@ -65,7 +65,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
         if type_ == tools.TypeType.Original:
             code += "    var _" + value + " = (" + _type_ + ")_protocol[" + str(count) + "];\n"
         elif type_ == tools.TypeType.Custom:
-            code += "    var _" + value + " = protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
+            code += "    var _" + value + " = " + key + ".protcol_to_" + key + "(_protocol[" + str(count) + "]);\n"
         elif type_ == tools.TypeType.Array:
             array_type = key[:-2]
             array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
@@ -77,7 +77,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
             if array_type_ == tools.TypeType.Original:
                 code += "        _" + value + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _" + value + ".Add(protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                code += "        _" + value + ".Add(" array_type + ".protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "    }\n"
