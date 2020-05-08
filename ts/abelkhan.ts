@@ -6,7 +6,7 @@ export class Icaller{
         this.ch = _ch;
     }
 
-    public call_module_method(method_name:number, argvs:any){
+    public call_module_method(method_name:string, argvs:any){
         var _event = [this.module_name, method_name, argvs];
         this.ch.push(_event); 
     }
