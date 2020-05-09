@@ -21,11 +21,11 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     
     #code = "import uuidv1 = require('uuid/v1');\n"
     code = "    public class " + module_name + "_caller : abelkhan.Icaller {\n"
-    code += "    public rsp_cb_" + module_name + " rsp_cb_" + module_name + "_handle;\n"
-    code += "    " + module_name + "_caller(_ch:any, modules:abelkhan.modulemng) : base(\"" + module_name + "\", _ch)\n"
+    code += "        public rsp_cb_" + module_name + " rsp_cb_" + module_name + "_handle;\n"
+    code += "        " + module_name + "_caller(abelkhan.Ichannel _ch, abelkhan.modulemng modules) : base(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
     code += "            rsp_cb_" + module_name + "_handle = new rsp_cb_" + module_name + "(modules);\n"
-    code += "    }\n\n"
+    code += "        }\n\n"
 
     for i in funcs:
         func_name = i[0]
@@ -34,7 +34,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "    public " + func_name + "("
             count = 0
             for _type, _name in i[2]:
-                code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
+                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
                 if count < len(i[2]):
                     code += ", "

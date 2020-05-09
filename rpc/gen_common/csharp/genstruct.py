@@ -55,6 +55,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
             code += "    _protocol.Add(_array_" + _array_uuid + ");\n"
     code += "    return _protocol;\n"
     code += "    }\n"
+    return code
 
 def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code = "    public static" + struct_name + " protcol_to_" + struct_name + "(JArray _protocol){\n"
@@ -92,7 +93,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code += ");\n"
     code += "    return _struct;\n"
     code += "    }\n"
-    pass
+    return code
 
 def genstruct(pretreatment):
     dependent_struct = pretreatment.dependent_struct
@@ -105,6 +106,6 @@ def genstruct(pretreatment):
         code += genmainstruct(struct_name, elems, dependent_struct, dependent_enum)
         code += genstructprotocol(struct_name, elems, dependent_struct, dependent_enum)
         code += genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum)
-    code += "}\n"
+        code += "    }\n"
 
     return code
