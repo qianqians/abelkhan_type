@@ -48,7 +48,7 @@ namespace abelkhan
         private Ichannel ch;
     }
 
-    public class Response{
+    public class Response : Icaller{
         public Response(String _module_name, Ichannel _ch) : base(_module_name, _ch){ 
         }
     }

@@ -238,7 +238,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
     code_constructor_end = "    }\n\n"
     code = "}\n"
         
-    return code_constructor + code_constructor_cb + code_constructor_end + code_func + code + rsp_code 
+    return rsp_code + code_constructor + code_constructor_cb + code_constructor_end + code_func + code
         
 
 def genmodule(pretreatment):

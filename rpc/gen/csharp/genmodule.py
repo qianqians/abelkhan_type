@@ -126,7 +126,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
 
             rsp_code += "    public class rsp_" + func_name + " : abelkhan.Response {\n"
             rsp_code += "        private uuid : string;\n"
-            rsp_code += "        rsp_" + func_name + "(_ch:any, _uuid:string) : base(\"rsp_cb_" + module_name + "\", _ch)\n"
+            rsp_code += "        rsp_" + func_name + "(abelkhan.Ichannel _ch, String _uuid) : base(\"rsp_cb_" + module_name + "\", _ch)\n"
             rsp_code += "        {\n"
             rsp_code += "            uuid = _uuid;\n"
             rsp_code += "        }\n\n"
