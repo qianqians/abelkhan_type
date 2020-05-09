@@ -27,7 +27,7 @@ export class Imodule{
     public rsp:any = null;
     public process_event(_ch:any, _event:any){
         this.current_ch = _ch;
-        this.methods.get(_event[1]).apply(this, [_event[2]]);
+        this.methods.get(_event[1]).call(this, _event[2]);
         this.current_ch = null;
     }
 
