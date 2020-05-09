@@ -205,6 +205,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "            _argv_" + _argv_uuid + ".Add(_array_" + _array_uuid + ");\n"
             rsp_code += "            call_module_method(\"" + func_name + "_err\", _argv_" + _argv_uuid + ");\n"
             rsp_code += "        }\n\n"
+            rsp_code += "    }\n\n"
 
         else:
             raise "func:%s wrong rpc type:%s must req or ntf" % (func_name, i[1])
