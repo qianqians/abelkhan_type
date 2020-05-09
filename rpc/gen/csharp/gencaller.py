@@ -13,9 +13,9 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
 
     cb_code = "/*this cb code is codegen by abelkhan for c#*/\n"
     cb_code += "    public class rsp_cb_" + module_name + " : abelkhan.Imodule {\n"
-    cb_code_constructor = "    rsp_cb_" + module_name + "(abelkhan.modulemng modules) : base(\"rsp_cb_" + module_name + "\")\n"
-    cb_code_constructor += "    {\n"
-    cb_code_constructor += "        modules.reg_module(this);\n\n"
+    cb_code_constructor = "        rsp_cb_" + module_name + "(abelkhan.modulemng modules) : base(\"rsp_cb_" + module_name + "\")\n"
+    cb_code_constructor += "        {\n"
+    cb_code_constructor += "            modules.reg_module(this);\n\n"
     cb_code_section = ""
 
     
@@ -136,7 +136,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[4]):
                     code += ", "
             cb_code_section += ");\n"
-            cb_code_section += "                }\n"
+            cb_code_section += "            }\n"
             cb_code_section += "            map_" + func_name + ".Remove(uuid);\n"
             cb_code_section += "        }\n"
 
