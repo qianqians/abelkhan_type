@@ -1,7 +1,11 @@
+export interface Ichannel{
+    push : (_event:any) => void;
+}
+
 export class Icaller{
     private module_name : string;
     private ch : any;
-    constructor(_module_name:string, _ch:any){
+    constructor(_module_name:string, _ch:Ichannel){
         this.module_name = _module_name;
         this.ch = _ch;
     }
@@ -25,7 +29,7 @@ export class Imodule{
     
     public current_ch:any = null;
     public rsp:any = null;
-    public process_event(_ch:any, _event:any){
+    public process_event(_ch:Ichannel, _event:any){
         this.current_ch = _ch;
         this.methods.get(_event[1]).call(this, _event[2]);
         this.current_ch = null;
@@ -40,7 +44,7 @@ export class modulemng{
         this.module_set.set(_module.module_name, _module);
     }
 
-    public process_event(_ch:any, _event:any){
+    public process_event(_ch:Ichannel, _event:any){
         this.module_set.get(_event[0]).process_event(_ch, _event);
     }
 }
