@@ -65,7 +65,7 @@ namespace abelkhan
             rsp = null;
         }
 
-        public reg_method(String method_name, on_event method){
+        public void reg_method(String method_name, on_event method){
             events.Add(method_name, method);
         }
 
