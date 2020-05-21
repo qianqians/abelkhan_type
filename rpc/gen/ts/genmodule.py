@@ -151,7 +151,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "){\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            rsp_code += "        let _argv_" + _argv_uuid + " = [this.uuid];\n"
+            rsp_code += "        let _argv_" + _argv_uuid + ":any[] = [this.uuid];\n"
             for _type, _name in i[4]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:
@@ -186,7 +186,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "        this.call_module_method(\"" + func_name + "_rsp\", _argv_" + _argv_uuid + ");\n"
             rsp_code += "    }\n\n"
 
-            rsp_code += "    err("
+            rsp_code += "    public err("
             count = 0
             for _type, _name in i[6]:
                 rsp_code += _name + ":" + tools.convert_type(_type, dependent_struct, dependent_enum)
@@ -196,7 +196,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "){\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            rsp_code += "        let _argv_" + _argv_uuid + " = [this.uuid];\n"
+            rsp_code += "        let _argv_" + _argv_uuid + ":any[] = [this.uuid];\n"
             for _type, _name in i[6]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:

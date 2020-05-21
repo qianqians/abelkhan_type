@@ -19,8 +19,6 @@
 #include <rapidjson/writer.h>
 #include <rapidjson/stringbuffer.h>
 
-#include "signals.h"
-
 namespace abelkhan{
 
     std::string format(const char* pszFmt, ...)
@@ -30,7 +28,7 @@ namespace abelkhan{
         va_start(args, pszFmt);
         {
             int nLength = _vscprintf(pszFmt, args);
-            nLength += 1;  //上面返回的长度是包含\0，这里加上
+            nLength += 1;
             std::vector<char> vectorChars(nLength);
             _vsnprintf(vectorChars.data(), nLength, pszFmt, args);
             str.assign(vectorChars.data());
@@ -62,7 +60,7 @@ namespace abelkhan{
             ch = _ch;
         }
 
-        void call_module_method(std::string methodname, rapidjson::Value& argvs){
+        void call_module_method(std::string methodname, rapidjson::Document& argvs){
             rapidjson::Document _event;
             _event.SetArray();
             rapidjson::Document::AllocatorType& allocator = _event.GetAllocator();
@@ -73,7 +71,11 @@ namespace abelkhan{
             str_methodname.SetString(methodname.c_str(), methodname.size());
             _event.PushBack(str_methodname, allocator);
             _event.PushBack(argvs, allocator);
-
+            
+            for (auto it = _event[3].Begin(); it != _event[3].End(); ++it) {
+                it->GetDouble();
+            }
+            //std::vector<int>::push_back
             try
             {
                 ch->push(_event);
@@ -163,7 +165,7 @@ namespace abelkhan{
             module_set.erase(_module->module_name);
         }
 
-        void process_event(std::shared_ptr<Ichannel> _ch, rapidjson::Document _event) {
+        void process_event(std::shared_ptr<Ichannel> _ch, rapidjson::Document& _event) {
             try {
                 std::string module_name = _event[0].GetString();
                 auto it_module = module_set.find(module_name);

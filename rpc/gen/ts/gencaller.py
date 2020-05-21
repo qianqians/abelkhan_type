@@ -41,7 +41,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "){\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            code += "        let _argv_" + _argv_uuid + " = [];\n"
+            code += "        let _argv_" + _argv_uuid + ":any[] = [];\n"
             for _type, _name in i[2]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:
@@ -210,7 +210,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "        let uuid = uuidv1();\n\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            code += "        let _argv_" + _argv_uuid + " = [uuid];\n"
+            code += "        let _argv_" + _argv_uuid + ":any[] = [uuid];\n"
             for _type, _name in i[2]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:

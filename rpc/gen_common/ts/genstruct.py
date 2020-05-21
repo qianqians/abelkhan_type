@@ -64,14 +64,16 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
             code += "    _protocol.push(_array_" + _array_uuid + ");\n"
     code += "    return _protocol;\n"
     code += "}\n"
+    return code
 
 def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code = "export function protcol_to_" + struct_name + "(_protocol:any[]){\n"
     count = 0
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)
+        _type = tools.convert_type(key, dependent_struct, dependent_enum)
         if type_ == tools.TypeType.Original:
-            code += "    let _" + value + " = _protocol[" + str(count) + "] as " + key + ";\n"
+            code += "    let _" + value + " = _protocol[" + str(count) + "] as " + _type + ";\n"
         elif type_ == tools.TypeType.Custom:
             _import = tools.get_import(key, dependent_struct)
             if _import == "":
@@ -107,7 +109,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code += ");\n"
     code += "    return _struct;\n"
     code += "}\n"
-    pass
+    return code
 
 def genstruct(pretreatment):
     dependent_struct = pretreatment.dependent_struct
