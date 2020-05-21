@@ -29,7 +29,7 @@ namespace abelkhan
 
         public void call_module_method(String methodname, JArray argvs)
         {
-			JArray _event = new ArrayList();
+			JArray _event = new JArray();
             _event.Add(module_name);
             _event.Add(methodname);
             _event.Add(argvs);
