@@ -55,7 +55,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
-                    code += "        let _array_" + _array_uuid + ":any[] = [];"
+                    code += "        let _array_" + _array_uuid + ":any[] = [];\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
                     code += "        for(let v_" + _v_uuid + " of _name){\n"

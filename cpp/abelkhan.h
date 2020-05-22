@@ -60,7 +60,7 @@ namespace abelkhan{
             ch = _ch;
         }
 
-        void call_module_method(std::string methodname, rapidjson::Document& argvs){
+        void call_module_method(std::string methodname, rapidjson::Value& argvs){
             rapidjson::Document _event;
             _event.SetArray();
             rapidjson::Document::AllocatorType& allocator = _event.GetAllocator();
@@ -72,10 +72,6 @@ namespace abelkhan{
             _event.PushBack(str_methodname, allocator);
             _event.PushBack(argvs, allocator);
             
-            for (auto it = _event[3].Begin(); it != _event[3].End(); ++it) {
-                it->GetDouble();
-            }
-            //std::vector<int>::push_back
             try
             {
                 ch->push(_event);
@@ -120,7 +116,6 @@ namespace abelkhan{
             try
             {
                 std::string func_name = _event[1].GetString();
-
                 auto it_func = events.find(func_name);
                 if (it_func != events.end())
                 {

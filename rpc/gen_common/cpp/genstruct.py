@@ -31,10 +31,10 @@ def genmainstruct(struct_name, elems, dependent_struct, dependent_enum):
 
 def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
     code = "    public:\n"
-    code += "        static rapidjson::Document& " + struct_name + "_to_protcol(" + struct_name + " _struct){\n"
+    code += "        static rapidjson::Value& " + struct_name + "_to_protcol(" + struct_name + " _struct){\n"
     code += "            rapidjson::Document _protocol;\n"
     code += "            rapidjson::Document::AllocatorType& allocator = _protocol.GetAllocator();\n"
-    code += "            _protocol.SetArray();;\n"
+    code += "            _protocol.SetArray();\n"
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)
         if type_ == tools.TypeType.Int32 or type_ == tools.TypeType.Int64 or type_ == tools.TypeType.Uint32 or type_ == tools.TypeType.Uint64 or type_ == tools.TypeType.Float or type_ == tools.TypeType.Double or type_ == tools.TypeType.Bool:
@@ -48,7 +48,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
         elif type_ == tools.TypeType.Array:
             _array_uuid = str(uuid.uuid1())
             _array_uuid = '_'.join(_array_uuid.split('-'))
-            code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);"
+            code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
             _v_uuid = str(uuid.uuid1())
             _v_uuid = '_'.join(_v_uuid.split('-'))
             code += "            for(var v_" + _v_uuid + " : _struct." + value + "){\n"
@@ -66,12 +66,12 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "            }\n"
             code += "            _protocol.PushBack(_array_" + _array_uuid + ", allocator);\n"
-    code += "            return _protocol;\n"
+    code += "            return _protocol.GetArray();\n"
     code += "        }\n"
     return code
 
 def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
-    code = "        static " + struct_name + " protcol_to_" + struct_name + "(rapidjson::Document& _protocol){\n"
+    code = "        static " + struct_name + " protcol_to_" + struct_name + "(rapidjson::Value& _protocol){\n"
     count = 0
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)
@@ -119,7 +119,7 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
             elif array_type_ == tools.TypeType.String:
                 code += "        _" + value + ".push_back(it_" + _v_uuid + "->GetString());\n"
             elif array_type_ == tools.TypeType.Custom:
-                code += "        _" + value + ".Add(" + array_type + "::protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                code += "        _" + value + ".push_back(" + array_type + "::protcol_to_" + array_type + "(it_" + _v_uuid + "));\n"
             elif array_type_ == tools.TypeType.Array:
                 raise Exception("not support nested array:%s in struct:%s" % (key, struct_name))
             code += "            }\n"
@@ -127,10 +127,10 @@ def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
     code += "            " + struct_name + " _struct("
     count = 0
     for key, value in elems:
-        code += "        _" + value
+        code += "_" + value
         count = count + 1
         if count < len(elems):
-            code += ","
+            code += ", "
     code += ");\n"
     code += "            return _struct;\n"
     code += "        }\n"

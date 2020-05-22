@@ -31,7 +31,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
         func_name = i[0]
 
         if i[1] == "ntf":
-            code += "        public " + func_name + "("
+            code += "        public void" + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -51,7 +51,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
-                    code += "            var _array_" + _array_uuid + " = new JArray();"
+                    code += "            var _array_" + _array_uuid + " = new JArray();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
                     code += "            for(var v_" + _v_uuid + " of _name){\n"
