@@ -142,7 +142,7 @@ def genstruct(pretreatment):
     
     struct = pretreatment.struct
     
-    code = "/*this struct code is codegen by abelkhan codegen for c#*/\n"
+    code = "/*this struct code is codegen by abelkhan codegen for cpp*/\n"
     for struct_name, elems in struct.items():
         code += genmainstruct(struct_name, elems, dependent_struct, dependent_enum)
         code += genstructprotocol(struct_name, elems, dependent_struct, dependent_enum)

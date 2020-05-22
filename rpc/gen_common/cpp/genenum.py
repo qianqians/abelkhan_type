@@ -6,7 +6,7 @@
 def genenum(pretreatment):
     enum = pretreatment.enum
     
-    code = "/*this enum code is codegen by abelkhan codegen for c#*/\n\n"
+    code = "/*this enum code is codegen by abelkhan codegen for cpp*/\n\n"
     for enum_name, enums in enum.items():
         code += "    enum class" + enum_name + "{\n"
         names = []
