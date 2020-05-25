@@ -31,7 +31,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
         func_name = i[0]
 
         if i[1] == "ntf":
-            code += "        public void" + func_name + "("
+            code += "        public void " + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
