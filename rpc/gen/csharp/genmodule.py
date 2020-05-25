@@ -9,7 +9,7 @@ import tools
 def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
     code_constructor = "    public class " + module_name + "_module : abelkhan.Imodule {\n"
     code_constructor += "        private abelkhan.modulemng modules;\n"
-    code_constructor += "        " + module_name + "_module(abelkhan.modulemng _modules) : base(\"" + module_name + "\")\n"
+    code_constructor += "        public " + module_name + "_module(abelkhan.modulemng _modules) : base(\"" + module_name + "\")\n"
     code_constructor += "        {\n"
     code_constructor += "            modules = _modules;\n"
     code_constructor += "            modules.reg_module(this);\n\n"
@@ -126,7 +126,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
 
             rsp_code += "    public class rsp_" + func_name + " : abelkhan.Response {\n"
             rsp_code += "        private string uuid;\n"
-            rsp_code += "        rsp_" + func_name + "(abelkhan.Ichannel _ch, String _uuid) : base(\"rsp_cb_" + module_name + "\", _ch)\n"
+            rsp_code += "        public rsp_" + func_name + "(abelkhan.Ichannel _ch, String _uuid) : base(\"rsp_cb_" + module_name + "\", _ch)\n"
             rsp_code += "        {\n"
             rsp_code += "            uuid = _uuid;\n"
             rsp_code += "        }\n\n"

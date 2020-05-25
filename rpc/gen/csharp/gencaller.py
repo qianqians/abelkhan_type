@@ -13,7 +13,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
 
     cb_code = "/*this cb code is codegen by abelkhan for c#*/\n"
     cb_code += "    public class rsp_cb_" + module_name + " : abelkhan.Imodule {\n"
-    cb_code_constructor = "        rsp_cb_" + module_name + "(abelkhan.modulemng modules) : base(\"rsp_cb_" + module_name + "\")\n"
+    cb_code_constructor = "        public rsp_cb_" + module_name + "(abelkhan.modulemng modules) : base(\"rsp_cb_" + module_name + "\")\n"
     cb_code_constructor += "        {\n"
     cb_code_constructor += "            modules.reg_module(this);\n\n"
     cb_code_section = ""
@@ -22,7 +22,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     #code = "import uuidv1 = require('uuid/v1');\n"
     code = "    public class " + module_name + "_caller : abelkhan.Icaller {\n"
     code += "        public rsp_cb_" + module_name + " rsp_cb_" + module_name + "_handle;\n"
-    code += "        " + module_name + "_caller(abelkhan.Ichannel _ch, abelkhan.modulemng modules) : base(\"" + module_name + "\", _ch)\n"
+    code += "        public " + module_name + "_caller(abelkhan.Ichannel _ch, abelkhan.modulemng modules) : base(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
     code += "            rsp_cb_" + module_name + "_handle = new rsp_cb_" + module_name + "(modules);\n"
     code += "        }\n\n"
