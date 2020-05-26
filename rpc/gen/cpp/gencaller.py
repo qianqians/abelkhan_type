@@ -271,14 +271,16 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[2]):
                     code += ", "
             code += "){\n"
-            code += "            auto uuid = boost::lexical_cast<std::string>(boost::uuids::random_generator()());\n"
+            _cb_uuid_uuid = str(uuid.uuid1())
+            _cb_uuid_uuid = '_'.join(_cb_uuid_uuid.split('-'))
+            code += "            auto uuid_" + _cb_uuid_uuid + " = boost::lexical_cast<std::string>(boost::uuids::random_generator()());\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
             code += "            rapidjson::Document _argv_" + _argv_uuid + ";\n"
             code += "            rapidjson::Document::AllocatorType& allocator = _argv_" + _argv_uuid + ".GetAllocator();\n"
             code += "            _argv_" + _argv_uuid + ".SetArray();\n"
             code += "            rapidjson::Value str_uuid(rapidjson::kStringType);\n"
-            code += "            str_uuid.SetString(uuid.c_str(), uuid.size());\n"
+            code += "            str_uuid.SetString(uuid_" + _cb_uuid_uuid + ".c_str(), uuid_" + _cb_uuid_uuid + ".size());\n"
             code += "            _argv_" + _argv_uuid + ".PushBack(str_uuid, allocator);\n"
             for _type, _name in i[2]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)

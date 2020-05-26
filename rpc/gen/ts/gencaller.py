@@ -207,10 +207,12 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[2]):
                     code += ", "
             code += "){\n"
-            code += "        let uuid = uuidv1();\n\n"
+            _cb_uuid_uuid = str(uuid.uuid1())
+            _cb_uuid_uuid = '_'.join(_cb_uuid_uuid.split('-'))
+            code += "        let uuid_" + _cb_uuid_uuid + " = uuidv1();\n\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            code += "        let _argv_" + _argv_uuid + ":any[] = [uuid];\n"
+            code += "        let _argv_" + _argv_uuid + ":any[] = [uuid_" + _cb_uuid_uuid + "];\n"
             for _type, _name in i[2]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:

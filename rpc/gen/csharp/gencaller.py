@@ -188,11 +188,13 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[2]):
                     code += ", "
             code += "){\n"
-            code += "            var uuid = System.Guid.NewGuid().ToString(\"N\");\n\n"
+            _cb_uuid_uuid = str(uuid.uuid1())
+            _cb_uuid_uuid = '_'.join(_cb_uuid_uuid.split('-'))
+            code += "            var uuid_" + _cb_uuid_uuid + " = System.Guid.NewGuid().ToString(\"N\");\n\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
             code += "            var _argv_" + _argv_uuid + " = new JArray();\n"
-            code += "            _argv_" + _argv_uuid + ".Add(uuid);\n"
+            code += "            _argv_" + _argv_uuid + ".Add(uuid_" + _cb_uuid_uuid + ");\n"
             for _type, _name in i[2]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Original:
