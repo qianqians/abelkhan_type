@@ -246,7 +246,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
             code += "        this.call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n"
             code += "        let cb_" + func_name + "_obj = new cb_" + func_name + "();\n"
-            code += "        this.rsp_cb_" + module_name + "_handle.map_" + func_name + ".set(uuid, cb_" + func_name + "_obj);\n\n"
+            code += "        this.rsp_cb_" + module_name + "_handle.map_" + func_name + ".set(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n\n"
             code += "        return cb_" + func_name + "_obj;\n"
             code += "    }\n\n"
 

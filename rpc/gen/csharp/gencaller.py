@@ -220,7 +220,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            _argv_" + _argv_uuid + ".Add(_array_" + _array_uuid + ");\n"
             code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n\n"
             code += "            var cb_" + func_name + "_obj = new cb_" + func_name + "();\n"
-            code += "            rsp_cb_" + module_name + "_handle.map_" + func_name + ".Add(uuid, cb_" + func_name + "_obj);\n"
+            code += "            rsp_cb_" + module_name + "_handle.map_" + func_name + ".Add(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n"
             code += "            return cb_" + func_name + "_obj;\n"
             code += "        }\n\n"
 

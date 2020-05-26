@@ -33,3 +33,4 @@
 /rpc/parser/*.pyc
 /rpc/tools/cpp/*.pyc
 /rpc/gen/cpp/*.pyc
+*.pyc
