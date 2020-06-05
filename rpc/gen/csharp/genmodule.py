@@ -131,7 +131,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "            uuid = _uuid;\n"
             rsp_code += "        }\n\n"
 
-            rsp_code += "        public rsp("
+            rsp_code += "        public void rsp("
             for _type, _name in i[4]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
@@ -168,7 +168,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "            call_module_method(\"" + func_name + "_rsp\", _argv_" + _argv_uuid + ");\n"
             rsp_code += "        }\n\n"
 
-            rsp_code += "        err("
+            rsp_code += "        public void err("
             count = 0
             for _type, _name in i[6]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name

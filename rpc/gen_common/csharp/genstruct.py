@@ -58,7 +58,7 @@ def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
     return code
 
 def genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum):
-    code = "        public static" + struct_name + " protcol_to_" + struct_name + "(JArray _protocol){\n"
+    code = "        public static " + struct_name + " protcol_to_" + struct_name + "(JArray _protocol){\n"
     count = 0
     for key, value in elems:
         type_ = tools.check_type(key, dependent_struct, dependent_enum)

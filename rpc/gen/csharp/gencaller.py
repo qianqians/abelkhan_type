@@ -93,6 +93,49 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_func += "            on" + func_name + "_cb += cb;\n"
             cb_func += "            on" + func_name + "_err += err;\n"
             cb_func += "        }\n\n"
+            
+            cb_func += "        public void call_cb("
+            count = 0
+            for _type, _name in i[4]:
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
+                count = count + 1
+                if count < len(i[4]):
+                    cb_func += ", "
+            cb_func += ")\n        {\n"
+            cb_func += "            if (on" + func_name + "_cb != null)\n"
+            cb_func += "            {\n"
+            cb_func += "                on" + func_name + "_cb(" 
+            count = 0
+            for _type, _name in i[4]:
+                cb_func += _name
+                count = count + 1
+                if count < len(i[4]):
+                    cb_func += ", "
+            cb_func += ");\n"
+            cb_func += "            }\n"
+            cb_func += "        }\n\n"
+            
+            cb_func += "        public void call_err("
+            count = 0
+            for _type, _name in i[6]:
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
+                count = count + 1
+                if count < len(i[6]):
+                    cb_func += ", "
+            cb_func += ")\n        {\n"
+            cb_func += "            if (on" + func_name + "_err != null)\n"
+            cb_func += "            {\n"
+            cb_func += "                on" + func_name + "_err(" 
+            count = 0
+            for _type, _name in i[6]:
+                cb_func += _name
+                count = count + 1
+                if count < len(i[6]):
+                    cb_func += ", "
+            cb_func += ");\n"
+            cb_func += "            }\n"
+            cb_func += "        }\n\n"
+
             cb_func += "    }\n\n"
 
             cb_code += "        public Dictionary<string, cb_" + func_name + "> map_" + func_name + ";\n"
@@ -127,8 +170,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     cb_code_section += "            }\n"
                 count += 1
             cb_code_section += "            var rsp = map_" + func_name + "[uuid];\n"
-            cb_code_section += "            if (rsp.event_" + func_name + "_handle_cb != null){\n"
-            cb_code_section += "                rsp.event_" + func_name + "_handle_cb("
+            cb_code_section += "            rsp.call_cb("
             count = 0
             for _type, _name in i[4]:
                 cb_code_section += "_" + _name
@@ -136,7 +178,6 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[4]):
                     cb_code_section += ", "
             cb_code_section += ");\n"
-            cb_code_section += "            }\n"
             cb_code_section += "            map_" + func_name + ".Remove(uuid);\n"
             cb_code_section += "        }\n"
 
@@ -167,8 +208,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     cb_code_section += "            }\n"
                 count += 1
             cb_code_section += "            var rsp = map_" + func_name + "[uuid];\n"
-            cb_code_section += "            if (rsp.event_" + func_name + "_handle_err != null){\n"
-            cb_code_section += "                rsp.event_" + func_name + "_handle_err("
+            cb_code_section += "            rsp.call_err("
             count = 0
             for _type, _name in i[6]:
                 cb_code_section += "_" + _name
@@ -176,7 +216,6 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[6]):
                     cb_code_section += ", "
             cb_code_section += ");\n"
-            cb_code_section += "            }\n"
             cb_code_section += "            map_" + func_name + ".Remove(uuid);\n"
             cb_code_section += "        }\n"
 

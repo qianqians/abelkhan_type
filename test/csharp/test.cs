@@ -27,7 +27,7 @@ namespace abelkhan
             _protocol.Add(_struct.argv4);
             return _protocol;
         }
-        public statictest1 protcol_to_test1(JArray _protocol){
+        public static test1 protcol_to_test1(JArray _protocol){
             var _argv1 = (Int32)_protocol[0];
             var _argv2 = (String)_protocol[1];
             var _argv3 = (Single)_protocol[2];
@@ -52,7 +52,7 @@ namespace abelkhan
             _protocol.Add(test1.test1_to_protcol(_struct.argv2));
             return _protocol;
         }
-        public statictest2 protcol_to_test2(JArray _protocol){
+        public static test2 protcol_to_test2(JArray _protocol){
             var _argv1 = (Int32)_protocol[0];
             var _argv2 = test1.protcol_to_test1(_protocol[1]);
             var _struct = new test2(_argv1,_argv2);
@@ -75,6 +75,22 @@ namespace abelkhan
             ontest3_err += err;
         }
 
+        public void call_cb(test1 t1)
+        {
+            if (ontest3_cb != null)
+            {
+                ontest3_cb(t1);
+            }
+        }
+
+        public void call_err(Int32 err)
+        {
+            if (ontest3_err != null)
+            {
+                ontest3_err(err);
+            }
+        }
+
     }
 
 /*this cb code is codegen by abelkhan for c#*/
@@ -92,18 +108,14 @@ namespace abelkhan
             var uuid = (String)inArray[0];
             var _t1 = test1.protcol_to_test1(inArray[1]);
             var rsp = map_test3[uuid];
-            if (rsp.event_test3_handle_cb != null){
-                rsp.event_test3_handle_cb(_t1);
-            }
+            rsp.call_cb(_t1);
             map_test3.Remove(uuid);
         }
         public void test3_err(JArray inArray){
             var uuid = (String)inArray[0];
             var _err = (Int32)inArray[1];
             var rsp = map_test3[uuid];
-            if (rsp.event_test3_handle_err != null){
-                rsp.event_test3_handle_err(_err);
-            }
+            rsp.call_err(_err);
             map_test3.Remove(uuid);
         }
     }
@@ -116,26 +128,26 @@ namespace abelkhan
         }
 
         public cb_test3 test3(test2 t2){
-            var uuid_8430cdb0_9f37_11ea_ab7e_a85e451255ad = System.Guid.NewGuid().ToString("N");
+            var uuid_36d1b7a1_a6d5_11ea_842b_a85e451255ad = System.Guid.NewGuid().ToString("N");
 
-            var _argv_843142de_9f37_11ea_8095_a85e451255ad = new JArray();
-            _argv_843142de_9f37_11ea_8095_a85e451255ad.Add(uuid_8430cdb0_9f37_11ea_ab7e_a85e451255ad);
-            _argv_843142de_9f37_11ea_8095_a85e451255ad.Add(test2.test2_to_protcol(t2));
-            call_module_method("test3", _argv_843142de_9f37_11ea_8095_a85e451255ad);
+            var _argv_36d253de_a6d5_11ea_9fcd_a85e451255ad = new JArray();
+            _argv_36d253de_a6d5_11ea_9fcd_a85e451255ad.Add(uuid_36d1b7a1_a6d5_11ea_842b_a85e451255ad);
+            _argv_36d253de_a6d5_11ea_9fcd_a85e451255ad.Add(test2.test2_to_protcol(t2));
+            call_module_method("test3", _argv_36d253de_a6d5_11ea_9fcd_a85e451255ad);
 
             var cb_test3_obj = new cb_test3();
-            rsp_cb_test_handle.map_test3.Add(uuid_8430cdb0_9f37_11ea_ab7e_a85e451255ad, cb_test3_obj);
+            rsp_cb_test_handle.map_test3.Add(uuid_36d1b7a1_a6d5_11ea_842b_a85e451255ad, cb_test3_obj);
             return cb_test3_obj;
         }
 
         public void test4(List<test2> argv){
-            var _argv_843142df_9f37_11ea_98c8_a85e451255ad = new JArray();
-            var _array_843142e0_9f37_11ea_8611_a85e451255ad = new JArray();
-            for(var v_843142e1_9f37_11ea_9331_a85e451255ad of _name){
-                _array_843142e0_9f37_11ea_8611_a85e451255ad.Add(test2.test2_to_protcol(v_843142e1_9f37_11ea_9331_a85e451255ad));
+            var _argv_36d253df_a6d5_11ea_81b9_a85e451255ad = new JArray();
+            var _array_36d253e0_a6d5_11ea_a304_a85e451255ad = new JArray();
+            for(var v_36d253e1_a6d5_11ea_b345_a85e451255ad of _name){
+                _array_36d253e0_a6d5_11ea_a304_a85e451255ad.Add(test2.test2_to_protcol(v_36d253e1_a6d5_11ea_b345_a85e451255ad));
             }
-            _argv_843142df_9f37_11ea_98c8_a85e451255ad.Add(_array_843142e0_9f37_11ea_8611_a85e451255ad);
-            call_module_method("test4", _argv_843142df_9f37_11ea_98c8_a85e451255ad);
+            _argv_36d253df_a6d5_11ea_81b9_a85e451255ad.Add(_array_36d253e0_a6d5_11ea_a304_a85e451255ad);
+            call_module_method("test4", _argv_36d253df_a6d5_11ea_81b9_a85e451255ad);
         }
 
     }
@@ -147,18 +159,18 @@ namespace abelkhan
             uuid = _uuid;
         }
 
-        public rsp(test1 t1){
-            var _argv_843142e2_9f37_11ea_b1c2_a85e451255ad = new JArray();
-            _argv_843142e2_9f37_11ea_b1c2_a85e451255ad.Add(uuid);
-            _argv_843142e2_9f37_11ea_b1c2_a85e451255ad.Add(test1.test1_to_protcol(t1));
-            call_module_method("test3_rsp", _argv_843142e2_9f37_11ea_b1c2_a85e451255ad);
+        public void rsp(test1 t1){
+            var _argv_36d253e2_a6d5_11ea_b276_a85e451255ad = new JArray();
+            _argv_36d253e2_a6d5_11ea_b276_a85e451255ad.Add(uuid);
+            _argv_36d253e2_a6d5_11ea_b276_a85e451255ad.Add(test1.test1_to_protcol(t1));
+            call_module_method("test3_rsp", _argv_36d253e2_a6d5_11ea_b276_a85e451255ad);
         }
 
-        err(Int32 err){
-            var _argv_843142e3_9f37_11ea_8c1e_a85e451255ad = new JArray();
-            _argv_843142e3_9f37_11ea_8c1e_a85e451255ad.Add(this.uuid);
-            _argv_843142e3_9f37_11ea_8c1e_a85e451255ad.Add(err);
-            call_module_method("test3_err", _argv_843142e3_9f37_11ea_8c1e_a85e451255ad);
+        public void err(Int32 err){
+            var _argv_36d253e3_a6d5_11ea_a3ce_a85e451255ad = new JArray();
+            _argv_36d253e3_a6d5_11ea_a3ce_a85e451255ad.Add(this.uuid);
+            _argv_36d253e3_a6d5_11ea_a3ce_a85e451255ad.Add(err);
+            call_module_method("test3_err", _argv_36d253e3_a6d5_11ea_a3ce_a85e451255ad);
         }
 
     }
@@ -192,8 +204,8 @@ namespace abelkhan
 
         public void test4(JArray inArray){
             var _argv = new List<test2>();
-            for(var v_843142e4_9f37_11ea_a275_a85e451255ad in inArray[0]){
-                _argv.Add(test2.protcol_to_test2(v_843142e4_9f37_11ea_a275_a85e451255ad));
+            for(var v_36d253e4_a6d5_11ea_872c_a85e451255ad in inArray[0]){
+                _argv.Add(test2.protcol_to_test2(v_36d253e4_a6d5_11ea_872c_a85e451255ad));
             }
             if (ontest4 != null){
                 ontest4(_argv);
