@@ -25,12 +25,13 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     #code = "import uuidv1 = require('uuid/v1');\n"
     code = "    class " + module_name + "_caller : Icaller {\n"
     code += "    public:\n"
-    code += "        std::shared_Ptr<rsp_cb_" + module_name + "> rsp_cb_" + module_name + "_handle;\n"
+    code += "        static std::shared_ptr<rsp_cb_" + module_name + "> rsp_cb_" + module_name + "_handle;\n"
     code += "        " + module_name + "_caller(std::shared_ptr<Ichannel> _ch, std::shared_ptr<modulemng> modules) : Icaller(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
     code += "            rsp_cb_" + module_name + "_handle = std::make_shared<rsp_cb_" + module_name + ">();\n"
     code += "            rsp_cb_" + module_name + "_handle->Init(modules);\n"
     code += "        }\n\n"
+    cpp_cpde = "std::shared_ptr<rsp_cb_" + module_name + "> " + module_name + "_caller::rsp_cb_" + module_name + "_handle = nullptr;\n"
 
     for i in funcs:
         func_name = i[0]
@@ -326,7 +327,9 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     cb_code_section += "    }\n\n"
     code += "    }\n"
 
-    return cb_func + cb_code + cb_code_constructor + cb_code_section + code
+    h_code = cb_func + cb_code + cb_code_constructor + cb_code_section + code
+
+    return h_code, cpp_cpde
 
 def gencaller(pretreatment):
     dependent_struct = pretreatment.dependent_struct
@@ -334,8 +337,11 @@ def gencaller(pretreatment):
     
     modules = pretreatment.module
     
-    code = "/*this caller code is codegen by abelkhan codegen for cpp*/\n"
+    h_code = "/*this caller code is codegen by abelkhan codegen for cpp*/\n"
+    cpp_cpde = "/*this caller code is codegen by abelkhan codegen for cpp*/\n"
     for module_name, funcs in modules.items():
-        code += gen_module_caller(module_name, funcs, dependent_struct, dependent_enum)
-        
-    return code
+        h_code_tmp, cpp_cpde_tmp = gen_module_caller(module_name, funcs, dependent_struct, dependent_enum)
+        h_code += h_code_tmp
+        cpp_cpde += cpp_cpde_tmp
+
+    return h_code, cpp_cpde

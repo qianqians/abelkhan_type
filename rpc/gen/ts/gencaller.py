@@ -20,11 +20,13 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
 
     
     #code = "import uuidv1 = require('uuid/v1');\n"
-    code = "export class " + module_name + "_caller extends abelkhan.Icaller {\n"
-    code += "    public rsp_cb_" + module_name + "_handle : rsp_cb_" + module_name + ";\n"
+    code = "let rsp_cb_" + module_name + "_handle : rsp_cb_" + module_name + " | null = null;\n"
+    code += "export class " + module_name + "_caller extends abelkhan.Icaller {\n"
     code += "    constructor(_ch:any, modules:abelkhan.modulemng){\n"
     code += "        super(\"" + module_name + "\", _ch);\n"
-    code += "        this.rsp_cb_" + module_name + "_handle = new rsp_cb_" + module_name + "(modules);\n"
+    code += "        if (rsp_cb_" + module_name + "_handle == null){\n"
+    code += "            rsp_cb_" + module_name + "_handle = new rsp_cb_" + module_name + "(modules);\n"
+    code += "        }\n"
     code += "    }\n\n"
 
     for i in funcs:
@@ -244,9 +246,11 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code += "        }\n"                                                     
                     code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
-            code += "        this.call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n"
+            code += "        this.call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n\n"
             code += "        let cb_" + func_name + "_obj = new cb_" + func_name + "();\n"
-            code += "        this.rsp_cb_" + module_name + "_handle.map_" + func_name + ".set(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n\n"
+            code += "        if (rsp_cb_" + module_name + "_handle){\n"
+            code += "            rsp_cb_" + module_name + "_handle.map_" + func_name + ".set(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n"
+            code += "        }\n"
             code += "        return cb_" + func_name + "_obj;\n"
             code += "    }\n\n"
 
