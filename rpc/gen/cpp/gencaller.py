@@ -28,8 +28,10 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     code += "        static std::shared_ptr<rsp_cb_" + module_name + "> rsp_cb_" + module_name + "_handle;\n"
     code += "        " + module_name + "_caller(std::shared_ptr<Ichannel> _ch, std::shared_ptr<modulemng> modules) : Icaller(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
-    code += "            rsp_cb_" + module_name + "_handle = std::make_shared<rsp_cb_" + module_name + ">();\n"
-    code += "            rsp_cb_" + module_name + "_handle->Init(modules);\n"
+    code += "            if (rsp_cb_" + module_name + "_handle == nullptr){\n"
+    code += "                rsp_cb_" + module_name + "_handle = std::make_shared<rsp_cb_" + module_name + ">();\n"
+    code += "                rsp_cb_" + module_name + "_handle->Init(modules);\n"
+    code += "            }\n"
     code += "        }\n\n"
     cpp_cpde = "std::shared_ptr<rsp_cb_" + module_name + "> " + module_name + "_caller::rsp_cb_" + module_name + "_handle = nullptr;\n"
 

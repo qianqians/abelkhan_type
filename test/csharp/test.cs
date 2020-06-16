@@ -131,26 +131,26 @@ namespace abelkhan
         }
 
         public cb_test3 test3(test2 t2){
-            var uuid_e3d43630_ab8f_11ea_ae23_a85e451255ad = System.Guid.NewGuid().ToString("N");
+            var uuid_7023992e_af7f_11ea_8fec_a85e451255ad = System.Guid.NewGuid().ToString("N");
 
-            var _argv_e3d4d270_ab8f_11ea_b7ec_a85e451255ad = new JArray();
-            _argv_e3d4d270_ab8f_11ea_b7ec_a85e451255ad.Add(uuid_e3d43630_ab8f_11ea_ae23_a85e451255ad);
-            _argv_e3d4d270_ab8f_11ea_b7ec_a85e451255ad.Add(test2.test2_to_protcol(t2));
-            call_module_method("test3", _argv_e3d4d270_ab8f_11ea_b7ec_a85e451255ad);
+            var _argv_70245c80_af7f_11ea_8c7a_a85e451255ad = new JArray();
+            _argv_70245c80_af7f_11ea_8c7a_a85e451255ad.Add(uuid_7023992e_af7f_11ea_8fec_a85e451255ad);
+            _argv_70245c80_af7f_11ea_8c7a_a85e451255ad.Add(test2.test2_to_protcol(t2));
+            call_module_method("test3", _argv_70245c80_af7f_11ea_8c7a_a85e451255ad);
 
             var cb_test3_obj = new cb_test3();
-            rsp_cb_test_handle.map_test3.Add(uuid_e3d43630_ab8f_11ea_ae23_a85e451255ad, cb_test3_obj);
+            rsp_cb_test_handle.map_test3.Add(uuid_7023992e_af7f_11ea_8fec_a85e451255ad, cb_test3_obj);
             return cb_test3_obj;
         }
 
         public void test4(List<test2> argv){
-            var _argv_e3d4d271_ab8f_11ea_9d47_a85e451255ad = new JArray();
-            var _array_e3d4d272_ab8f_11ea_ae13_a85e451255ad = new JArray();
-            for(var v_e3d4d273_ab8f_11ea_b030_a85e451255ad of _name){
-                _array_e3d4d272_ab8f_11ea_ae13_a85e451255ad.Add(test2.test2_to_protcol(v_e3d4d273_ab8f_11ea_b030_a85e451255ad));
+            var _argv_70245c81_af7f_11ea_841d_a85e451255ad = new JArray();
+            var _array_70245c82_af7f_11ea_93bf_a85e451255ad = new JArray();
+            for(var v_70245c83_af7f_11ea_b764_a85e451255ad of _name){
+                _array_70245c82_af7f_11ea_93bf_a85e451255ad.Add(test2.test2_to_protcol(v_70245c83_af7f_11ea_b764_a85e451255ad));
             }
-            _argv_e3d4d271_ab8f_11ea_9d47_a85e451255ad.Add(_array_e3d4d272_ab8f_11ea_ae13_a85e451255ad);
-            call_module_method("test4", _argv_e3d4d271_ab8f_11ea_9d47_a85e451255ad);
+            _argv_70245c81_af7f_11ea_841d_a85e451255ad.Add(_array_70245c82_af7f_11ea_93bf_a85e451255ad);
+            call_module_method("test4", _argv_70245c81_af7f_11ea_841d_a85e451255ad);
         }
 
     }
@@ -163,17 +163,17 @@ namespace abelkhan
         }
 
         public void rsp(test1 t1){
-            var _argv_e3d4d274_ab8f_11ea_af97_a85e451255ad = new JArray();
-            _argv_e3d4d274_ab8f_11ea_af97_a85e451255ad.Add(uuid);
-            _argv_e3d4d274_ab8f_11ea_af97_a85e451255ad.Add(test1.test1_to_protcol(t1));
-            call_module_method("test3_rsp", _argv_e3d4d274_ab8f_11ea_af97_a85e451255ad);
+            var _argv_70245c84_af7f_11ea_b061_a85e451255ad = new JArray();
+            _argv_70245c84_af7f_11ea_b061_a85e451255ad.Add(uuid);
+            _argv_70245c84_af7f_11ea_b061_a85e451255ad.Add(test1.test1_to_protcol(t1));
+            call_module_method("test3_rsp", _argv_70245c84_af7f_11ea_b061_a85e451255ad);
         }
 
         public void err(Int32 err){
-            var _argv_e3d4d275_ab8f_11ea_aea7_a85e451255ad = new JArray();
-            _argv_e3d4d275_ab8f_11ea_aea7_a85e451255ad.Add(this.uuid);
-            _argv_e3d4d275_ab8f_11ea_aea7_a85e451255ad.Add(err);
-            call_module_method("test3_err", _argv_e3d4d275_ab8f_11ea_aea7_a85e451255ad);
+            var _argv_70245c85_af7f_11ea_82cc_a85e451255ad = new JArray();
+            _argv_70245c85_af7f_11ea_82cc_a85e451255ad.Add(this.uuid);
+            _argv_70245c85_af7f_11ea_82cc_a85e451255ad.Add(err);
+            call_module_method("test3_err", _argv_70245c85_af7f_11ea_82cc_a85e451255ad);
         }
 
     }
@@ -207,8 +207,8 @@ namespace abelkhan
 
         public void test4(JArray inArray){
             var _argv = new List<test2>();
-            for(var v_e3d4d276_ab8f_11ea_a9db_a85e451255ad in inArray[0]){
-                _argv.Add(test2.protcol_to_test2(v_e3d4d276_ab8f_11ea_a9db_a85e451255ad));
+            for(var v_70245c86_af7f_11ea_b482_a85e451255ad in inArray[0]){
+                _argv.Add(test2.protcol_to_test2(v_70245c86_af7f_11ea_b482_a85e451255ad));
             }
             if (ontest4 != null){
                 ontest4(_argv);
