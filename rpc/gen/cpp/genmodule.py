@@ -24,7 +24,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
         if i[1] == "ntf":
             code_constructor += "            reg_method(\"" + func_name + "\", " + func_name + ");\n"
                 
-            code_func += "        boost::signals2::signal<void("
+            code_func += "        signals<void("
             count = 0
             for _type, _name in i[2]:
                 code_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -87,7 +87,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            }\n"                                                     
                 count += 1
 
-            code_func += "            sig_" + func_name + "("
+            code_func += "            sig_" + func_name + ".emit("
             count = 0
             for _type, _name in i[2]:
                 code_func += "_" + _name
@@ -99,14 +99,14 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
             code_constructor += "            reg_method(\"" + func_name + "\", " + func_name + ");\n"
             
-            code_func += "        boost::signals2::signal<void("
+            code_func += "        signals<void("
             count = 0
             for _type, _name in i[2]:
                 code_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
                 count += 1
                 if count < len(i[2]):
                     code_func += ", "
-            code_func += ") sig_" + func_name + ";\n\n"
+            code_func += ") sig_" + func_name + ";\n"
             
             code_func += "        public void " + func_name + "(rapidjson::Value& inArray){\n"
             code_func += "            auto _cb_uuid = inArray[0].GetString();\n"
@@ -164,7 +164,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 count += 1
 
             code_func += "            rsp = std::make_shared<rsp_" + func_name + ">(current_ch, _cb_uuid);\n"
-            code_func += "            sig_" + func_name + "("
+            code_func += "            sig_" + func_name + ".emit("
             count = 0
             for _type, _name in i[2]:
                 code_func += "_" + _name

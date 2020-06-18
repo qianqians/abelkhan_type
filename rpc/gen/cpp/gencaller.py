@@ -88,7 +88,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
             cb_func += "    class cb_" + func_name + "\n    {\n"
             cb_func += "    public:\n"
-            cb_func += "        boost::signals2::signal<void("
+            cb_func += "        signals<void("
             count = 0
             for _type, _name in i[4]:
                 cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -97,7 +97,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     cb_func += ", "
             cb_func += ") sig_" + func_name + "_cb;\n"
             
-            cb_func += "        boost::signals2::signal<void("
+            cb_func += "        signals<void("
             count = 0
             for _type, _name in i[6]:
                 cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
@@ -186,7 +186,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 count += 1
             cb_code_section += "            auto rsp = map_" + func_name + "[uuid];\n"
             cb_code_section += "            if (rsp != nullptr){\n"
-            cb_code_section += "                rsp->sig_" + func_name + "_cb("
+            cb_code_section += "                rsp->sig_" + func_name + "_cb.emit("
             count = 0
             for _type, _name in i[4]:
                 cb_code_section += "_" + _name
@@ -254,7 +254,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 count += 1
             cb_code_section += "            auto rsp = map_" + func_name + "[uuid];\n"
             cb_code_section += "            if (rsp != nullptr){\n"
-            cb_code_section += "                rsp->sig_" + func_name + "_err("
+            cb_code_section += "                rsp->sig_" + func_name + "_err.emit("
             count = 0
             for _type, _name in i[6]:
                 cb_code_section += "_" + _name

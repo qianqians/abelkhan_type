@@ -23,9 +23,9 @@ def gen_import(_import):
     code = "#include <boost/uuid/uuid.hpp>\n"
     code += "#include <boost/uuid/uuid_generators.hpp>\n"
     code += "#include <boost/uuid/uuid_io.hpp>\n"
-    code += "#include <boost/lexical_cast.hpp>\n"
-    code += "#include <boost/signals2.hpp>\n\n"
+    code += "#include <boost/lexical_cast.hpp>\n\n"
     code += "#include <rapidjson/rapidjson.h>\n\n"
+    code += "#include <signals.h>\n"
     code += "#include <abelkhan.h>\n\n"
     code += "namespace abelkhan\n{\n"
     return code
