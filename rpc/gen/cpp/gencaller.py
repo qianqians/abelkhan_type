@@ -33,7 +33,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     code += "                rsp_cb_" + module_name + "_handle->Init(modules);\n"
     code += "            }\n"
     code += "        }\n\n"
-    cpp_cpde = "std::shared_ptr<rsp_cb_" + module_name + "> " + module_name + "_caller::rsp_cb_" + module_name + "_handle = nullptr;\n"
+    cpp_code = "std::shared_ptr<rsp_cb_" + module_name + "> " + module_name + "_caller::rsp_cb_" + module_name + "_handle = nullptr;\n"
 
     for i in funcs:
         func_name = i[0]
@@ -68,7 +68,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "            for(auto v_" + _v_uuid + " : _name){\n"
+                    code += "            for(auto v_" + _v_uuid + " : " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Int32 or array_type_ == tools.TypeType.Int64 or array_type_ == tools.TypeType.Uint32 or array_type_ == tools.TypeType.Uint64 or array_type_ == tools.TypeType.Float or array_type_ == tools.TypeType.Double or array_type_ == tools.TypeType.Bool:
@@ -95,7 +95,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 count = count + 1
                 if count < len(i[4]):
                     cb_func += ", "
-            cb_func += ") sig_" + func_name + "_cb;\n"
+            cb_func += ")> sig_" + func_name + "_cb;\n"
             
             cb_func += "        signals<void("
             count = 0
@@ -104,9 +104,9 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 count = count + 1
                 if count < len(i[6]):
                     cb_func += ", "
-            cb_func += ") sig_" + func_name + "_err;\n\n"
+            cb_func += ")> sig_" + func_name + "_err;\n\n"
             
-            cb_func += "        public void callBack(std::function<void("
+            cb_func += "        void callBack(std::function<void("
             count = 0
             for _type, _name in i[4]:
                 cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -120,15 +120,15 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 count = count + 1
                 if count < len(i[6]):
                     cb_func += ", "
-            cb_func += ") err)\n        {\n"
+            cb_func += ")> err)\n        {\n"
             cb_func += "            sig_" + func_name + "_cb.connect(cb);\n"
             cb_func += "            sig_" + func_name + "_err.connect(err);\n"
             cb_func += "        }\n\n"
-            cb_func += "    }\n\n"
+            cb_func += "    };\n\n"
 
             cb_code += "        std::map<std::string, std::shared_ptr<cb_" + func_name + "> > map_" + func_name + ";\n"
-            cb_code_constructor += "            reg_method(\"" + func_name + "_rsp\", " + func_name + "_rsp);\n"
-            cb_code_constructor += "            reg_method(\"" + func_name + "_err\", " + func_name + "_err);\n"
+            cb_code_constructor += "            reg_method(\"" + func_name + "_rsp\", std::bind(&rsp_cb_" + module_name + "::" + func_name + "_rsp, this, std::placeholders::_1));\n"
+            cb_code_constructor += "            reg_method(\"" + func_name + "_err\", std::bind(&rsp_cb_" + module_name + "::" + func_name + "_err, this, std::placeholders::_1));\n"
 
             cb_code_section += "        void " + func_name + "_rsp(rapidjson::Value& inArray){\n"
             cb_code_section += "            auto uuid = inArray[0].GetString();\n"
@@ -153,7 +153,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                 elif type_ == tools.TypeType.String:
                     cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetString();\n"
                 elif type_ == tools.TypeType.Custom:
-                    cb_code_section += "            var _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    cb_code_section += "            auto _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
@@ -276,7 +276,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "){\n"
             _cb_uuid_uuid = str(uuid.uuid1())
             _cb_uuid_uuid = '_'.join(_cb_uuid_uuid.split('-'))
-            code += "            auto uuid_" + _cb_uuid_uuid + " = boost::lexical_cast<std::string>(boost::uuids::random_generator()());\n"
+            code += "            auto uuid_" + _cb_uuid_uuid + " = sole::uuid0().str();\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
             code += "            rapidjson::Document _argv_" + _argv_uuid + ";\n"
@@ -294,14 +294,14 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            str_" + _name + ".SetString(" + _name + ".c_str(), " + _name + ".size());\n"
                     code += "            _argv_" + _argv_uuid + ".PushBack(str_" + _name + ", allocator);\n"
                 elif type_ == tools.TypeType.Custom:
-                    code += "            _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "));\n"
+                    code += "            _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "), allocator);\n"
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
                     code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "            for(auto v_" + _v_uuid + " : _name){\n"
+                    code += "            for(auto v_" + _v_uuid + " : " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Int32 or array_type_ == tools.TypeType.Int64 or array_type_ == tools.TypeType.Uint32 or array_type_ == tools.TypeType.Uint64 or array_type_ == tools.TypeType.Float or array_type_ == tools.TypeType.Double or array_type_ == tools.TypeType.Bool:
@@ -317,7 +317,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            }\n"                                                     
                     code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
             code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ".GetArray());\n\n"
-            code += "            var cb_" + func_name + "_obj = std::make_shared<cb_" + func_name + ">();\n"
+            code += "            auto cb_" + func_name + "_obj = std::make_shared<cb_" + func_name + ">();\n"
             code += "            rsp_cb_" + module_name + "_handle->map_" + func_name + ".insert(std::make_pair(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj));\n"
             code += "            return cb_" + func_name + "_obj;\n"
             code += "        }\n\n"
@@ -326,12 +326,12 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             raise Exception("func:" + func_name + " wrong rpc type:" + i[1] + ", must req or ntf")
 
     cb_code_constructor += "        }\n"
-    cb_code_section += "    }\n\n"
-    code += "    }\n"
+    cb_code_section += "    };\n\n"
+    code += "    };\n"
 
     h_code = cb_func + cb_code + cb_code_constructor + cb_code_section + code
 
-    return h_code, cpp_cpde
+    return h_code, cpp_code
 
 def gencaller(pretreatment):
     dependent_struct = pretreatment.dependent_struct

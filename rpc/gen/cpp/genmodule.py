@@ -7,13 +7,13 @@ import uuid
 import tools
 
 def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
-    code_constructor = "    class " + module_name + "_module : Imodule, public std::enable_shared_from_this<" + module_name + ">{\n"
+    code_constructor = "    class " + module_name + "_module : Imodule, public std::enable_shared_from_this<" + module_name + "_module>{\n"
     code_constructor += "    public:\n"
     code_constructor += "        " + module_name + "_module() : Imodule(\"" + module_name + "\")\n"
     code_constructor += "        {\n"
     code_constructor += "        }\n\n"
-    code_constructor += "        void Init(abelkhan.modulemng _modules){\n"
-    code_constructor += "            _modules.reg_module(std::static_pointer_cast<Imodule>(shared_from_this()));\n\n"
+    code_constructor += "        void Init(std::shared_ptr<modulemng> _modules){\n"
+    code_constructor += "            _modules->reg_module(std::static_pointer_cast<Imodule>(shared_from_this()));\n\n"
         
     code_constructor_cb = ""
     rsp_code = ""
@@ -22,7 +22,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
         func_name = i[0]
 
         if i[1] == "ntf":
-            code_constructor += "            reg_method(\"" + func_name + "\", " + func_name + ");\n"
+            code_constructor += "            reg_method(\"" + func_name + "\", std::bind(&" + module_name + "_module::" + func_name + ", this, std::placeholders::_1));\n"
                 
             code_func += "        signals<void("
             count = 0
@@ -31,7 +31,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 count += 1
                 if count < len(i[2]):
                     code_func += ", "
-            code_func += ") sig_" + func_name + ";\n"
+            code_func += ")> sig_" + func_name + ";\n"
 
             code_func += "        void " + func_name + "(rapidjson::Value& inArray){\n"
             count = 0 
@@ -63,7 +63,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            std::vector<" + _array_type + "> _" + _name + ";\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code_func += "            for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it" + _v_uuid + "){\n"
+                    code_func += "            for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it_" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it_" + _v_uuid + "){\n"
                     if array_type_ == tools.TypeType.Int32:
                         code_func += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetInt());\n"
                     elif array_type_ == tools.TypeType.Int64:
@@ -81,7 +81,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     elif array_type_ == tools.TypeType.String:
                         code_func += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code_func += "                _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(it_" + _v_uuid + "));\n"
+                        code_func += "                _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(*it_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code_func += "            }\n"                                                     
@@ -97,7 +97,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += ");\n"
             code_func += "        }\n\n"
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
-            code_constructor += "            reg_method(\"" + func_name + "\", " + func_name + ");\n"
+            code_constructor += "            reg_method(\"" + func_name + "\", std::bind(&" + module_name + "_module::" + func_name + ", this, std::placeholders::_1));\n"
             
             code_func += "        signals<void("
             count = 0
@@ -106,9 +106,9 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 count += 1
                 if count < len(i[2]):
                     code_func += ", "
-            code_func += ") sig_" + func_name + ";\n"
+            code_func += ")> sig_" + func_name + ";\n"
             
-            code_func += "        public void " + func_name + "(rapidjson::Value& inArray){\n"
+            code_func += "        void " + func_name + "(rapidjson::Value& inArray){\n"
             code_func += "            auto _cb_uuid = inArray[0].GetString();\n"
             count = 1 
             for _type, _name in i[2]:
@@ -157,7 +157,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     elif array_type_ == tools.TypeType.String:
                         code_func += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code_func += "                _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(v_" + _v_uuid + "));\n"
+                        code_func += "                _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(*it_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code_func += "            }\n"                                                     
@@ -184,7 +184,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "            uuid = _uuid;\n"
             rsp_code += "        }\n\n"
 
-            rsp_code += "        rsp("
+            rsp_code += "        void rsp("
             for _type, _name in i[4]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
@@ -233,7 +233,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "            call_module_method(\"" + func_name + "_rsp\", _argv_" + _argv_uuid + ".GetArray());\n"
             rsp_code += "        }\n\n"
 
-            rsp_code += "        err("
+            rsp_code += "        void err("
             count = 0
             for _type, _name in i[6]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
@@ -282,13 +282,13 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
             rsp_code += "            call_module_method(\"" + func_name + "_err\", _argv_" + _argv_uuid + ".GetArray());\n"
             rsp_code += "        }\n\n"
-            rsp_code += "    }\n\n"
+            rsp_code += "    };\n\n"
 
         else:
             raise "func:%s wrong rpc type:%s must req or ntf" % (func_name, i[1])
 
     code_constructor_end = "        }\n\n"
-    code = "    }\n"
+    code = "    };\n"
         
     return rsp_code + code_constructor + code_constructor_cb + code_constructor_end + code_func + code
         

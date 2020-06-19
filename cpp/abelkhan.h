@@ -60,7 +60,7 @@ namespace abelkhan{
             ch = _ch;
         }
 
-        void call_module_method(std::string methodname, rapidjson::Value& argvs){
+        void call_module_method(std::string methodname, rapidjson::Value argvs){
             rapidjson::Document _event;
             _event.SetArray();
             rapidjson::Document::AllocatorType& allocator = _event.GetAllocator();

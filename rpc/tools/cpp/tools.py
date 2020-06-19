@@ -38,7 +38,7 @@ def check_type(typestr, dependent_struct, dependent_enum):
     elif typestr == 'uint64':
         return TypeType.Uint64
     elif typestr == 'string':
-        return TypeType.Original
+        return TypeType.String
     elif typestr == 'float':
         return TypeType.Float
     elif typestr == 'double':

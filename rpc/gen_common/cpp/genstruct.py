@@ -31,7 +31,7 @@ def genmainstruct(struct_name, elems, dependent_struct, dependent_enum):
 
 def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
     code = "    public:\n"
-    code += "        static rapidjson::Value& " + struct_name + "_to_protcol(" + struct_name + " _struct){\n"
+    code += "        static rapidjson::Value " + struct_name + "_to_protcol(" + struct_name + " _struct){\n"
     code += "            rapidjson::Document _protocol;\n"
     code += "            rapidjson::Document::AllocatorType& allocator = _protocol.GetAllocator();\n"
     code += "            _protocol.SetArray();\n"
@@ -147,6 +147,6 @@ def genstruct(pretreatment):
         code += genmainstruct(struct_name, elems, dependent_struct, dependent_enum)
         code += genstructprotocol(struct_name, elems, dependent_struct, dependent_enum)
         code += genprotocolstruct(struct_name, elems, dependent_struct, dependent_enum)
-        code += "    }\n\n"
+        code += "    };\n\n"
 
     return code
