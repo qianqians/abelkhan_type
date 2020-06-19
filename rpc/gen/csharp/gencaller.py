@@ -56,7 +56,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            var _array_" + _array_uuid + " = new JArray();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "            for(var v_" + _v_uuid + " of _name){\n"
+                    code += "            foreach(var v_" + _v_uuid + " in " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
@@ -162,7 +162,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     cb_code_section += "            var _" + _name + " = new List<" + _array_type + ">();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    cb_code_section += "            for(var v_" + _v_uuid + " of inArray[" + str(count) + "]){\n"
+                    cb_code_section += "            foreach(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
                     if array_type_ == tools.TypeType.Original:
                         cb_code_section += "                _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
@@ -200,7 +200,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     cb_code_section += "            var _" + _name + " = new List<" + _array_type + ">();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    cb_code_section += "            for(var v_" + _v_uuid + " of inArray[" + str(count) + "]){\n"
+                    cb_code_section += "            foreach(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
                     if array_type_ == tools.TypeType.Original:
                         cb_code_section += "                _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
@@ -248,7 +248,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            var _array_" + _array_uuid + " = new JArray();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "            for(var v_" + _v_uuid + " in _name){\n"
+                    code += "            foreach(var v_" + _v_uuid + " in " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:

@@ -49,7 +49,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            var _" + _name + " = new List<" + _array_type + ">();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code_func += "            for(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
+                    code_func += "            foreach(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
                     if array_type_ == tools.TypeType.Original:
                         code_func += "                _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
@@ -100,7 +100,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            var _" + _name + " = new List<" + _array_type + ">();\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code_func += "            for(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
+                    code_func += "            foreach(var v_" + _v_uuid + " in inArray[" + str(count) + "]){\n"
                     if array_type_ == tools.TypeType.Original:
                         code_func += "                _" + _name + ".Add((" + _array_type + ")v_" + _v_uuid + ");\n"
                     elif array_type_ == tools.TypeType.Custom:
@@ -154,7 +154,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "            var _array_" + _array_uuid + " = new JArray();"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "            for(var v_" + _v_uuid + " in _name){\n"
+                    rsp_code += "            foreach(var v_" + _v_uuid + " in " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
@@ -192,7 +192,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "            var _array_" + _array_uuid + " = new JArray();"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "            for(var v_" + _v_uuid + " in _name){\n"
+                    rsp_code += "            foreach(var v_" + _v_uuid + " in " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
