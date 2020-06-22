@@ -1,5 +1,5 @@
-#ifndef _h_test_6b9645b0_b45d_11ea_aec2_a85e451255ad_
-#define _h_test_6b9645b0_b45d_11ea_aec2_a85e451255ad_
+#ifndef _h_test_4d5e5ae1_b464_11ea_97bf_a85e451255ad_
+#define _h_test_4d5e5ae1_b464_11ea_97bf_a85e451255ad_
 
 #include <sole.hpp>
 #include <rapidjson/rapidjson.h>
@@ -147,31 +147,31 @@ namespace abelkhan
         }
 
         std::shared_ptr<test_test3_cb> test3(test2 t2){
-            auto uuid_6b96bae1_b45d_11ea_9cdc_a85e451255ad = sole::uuid0().str();
-            rapidjson::Document _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad;
-            rapidjson::Document::AllocatorType& allocator = _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad.GetAllocator();
-            _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad.SetArray();
+            auto uuid_4d5ef71e_b464_11ea_a615_a85e451255ad = sole::uuid0().str();
+            rapidjson::Document _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad;
+            rapidjson::Document::AllocatorType& allocator = _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad.GetAllocator();
+            _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad.SetArray();
             rapidjson::Value str_uuid(rapidjson::kStringType);
-            str_uuid.SetString(uuid_6b96bae1_b45d_11ea_9cdc_a85e451255ad.c_str(), uuid_6b96bae1_b45d_11ea_9cdc_a85e451255ad.size());
-            _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad.PushBack(str_uuid, allocator);
-            _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad.PushBack(test2::test2_to_protcol(t2), allocator);
-            call_module_method("test3", _argv_6b96bae2_b45d_11ea_9a38_a85e451255ad.GetArray());
+            str_uuid.SetString(uuid_4d5ef71e_b464_11ea_a615_a85e451255ad.c_str(), uuid_4d5ef71e_b464_11ea_a615_a85e451255ad.size());
+            _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad.PushBack(str_uuid, allocator);
+            _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad.PushBack(test2::test2_to_protcol(t2), allocator);
+            call_module_method("test3", _argv_4d5ef71f_b464_11ea_93f0_a85e451255ad.GetArray());
 
             auto cb_test3_obj = std::make_shared<test_test3_cb>();
-            rsp_cb_test_handle->map_test3.insert(std::make_pair(uuid_6b96bae1_b45d_11ea_9cdc_a85e451255ad, cb_test3_obj));
+            rsp_cb_test_handle->map_test3.insert(std::make_pair(uuid_4d5ef71e_b464_11ea_a615_a85e451255ad, cb_test3_obj));
             return cb_test3_obj;
         }
 
         void test4(std::vector<test2> argv){
-            rapidjson::Document _argv_6b96bae3_b45d_11ea_bd98_a85e451255ad;
-            rapidjson::Document::AllocatorType& allocator = _argv_6b96bae3_b45d_11ea_bd98_a85e451255ad.GetAllocator();
-            _argv_6b96bae3_b45d_11ea_bd98_a85e451255ad.SetArray();
-            rapidjson::Value _array_6b96bae4_b45d_11ea_966c_a85e451255ad(rapidjson::kArrayType);
-            for(auto v_6b96bae5_b45d_11ea_bb88_a85e451255ad : argv){
-                _array_6b96bae4_b45d_11ea_966c_a85e451255ad.PushBack(test2::test2_to_protcol(v_6b96bae5_b45d_11ea_bb88_a85e451255ad), allocator);
+            rapidjson::Document _argv_4d5ef720_b464_11ea_9929_a85e451255ad;
+            rapidjson::Document::AllocatorType& allocator = _argv_4d5ef720_b464_11ea_9929_a85e451255ad.GetAllocator();
+            _argv_4d5ef720_b464_11ea_9929_a85e451255ad.SetArray();
+            rapidjson::Value _array_4d5ef721_b464_11ea_a38e_a85e451255ad(rapidjson::kArrayType);
+            for(auto v_4d5ef722_b464_11ea_9cb5_a85e451255ad : argv){
+                _array_4d5ef721_b464_11ea_a38e_a85e451255ad.PushBack(test2::test2_to_protcol(v_4d5ef722_b464_11ea_9cb5_a85e451255ad), allocator);
             }
-            _argv_6b96bae3_b45d_11ea_bd98_a85e451255ad.PushBack(_array_6b96bae4_b45d_11ea_966c_a85e451255ad, allocator);
-            call_module_method("test4", _argv_6b96bae3_b45d_11ea_bd98_a85e451255ad.GetArray());
+            _argv_4d5ef720_b464_11ea_9929_a85e451255ad.PushBack(_array_4d5ef721_b464_11ea_a38e_a85e451255ad, allocator);
+            call_module_method("test4", _argv_4d5ef720_b464_11ea_9929_a85e451255ad.GetArray());
         }
 
     };
@@ -187,25 +187,25 @@ namespace abelkhan
         }
 
         void rsp(test1 t1){
-            rapidjson::Document _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad;
-            rapidjson::Document::AllocatorType& allocator = _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad.GetAllocator();
-            _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad.SetArray();
+            rapidjson::Document _argv_4d5ef723_b464_11ea_a702_a85e451255ad;
+            rapidjson::Document::AllocatorType& allocator = _argv_4d5ef723_b464_11ea_a702_a85e451255ad.GetAllocator();
+            _argv_4d5ef723_b464_11ea_a702_a85e451255ad.SetArray();
             rapidjson::Value str_uuid(rapidjson::kStringType);
             str_uuid.SetString(uuid.c_str(), uuid.size());
-            _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad.PushBack(str_uuid, allocator);
-            _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad.PushBack(test1::test1_to_protcol(t1), allocator);
-            call_module_method("test3_rsp", _argv_6b96bae6_b45d_11ea_93fa_a85e451255ad.GetArray());
+            _argv_4d5ef723_b464_11ea_a702_a85e451255ad.PushBack(str_uuid, allocator);
+            _argv_4d5ef723_b464_11ea_a702_a85e451255ad.PushBack(test1::test1_to_protcol(t1), allocator);
+            call_module_method("test3_rsp", _argv_4d5ef723_b464_11ea_a702_a85e451255ad.GetArray());
         }
 
         void err(int32_t err){
-            rapidjson::Document _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad;
-            rapidjson::Document::AllocatorType& allocator = _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad.GetAllocator();
-            _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad.SetArray();
+            rapidjson::Document _argv_4d5ef724_b464_11ea_891e_a85e451255ad;
+            rapidjson::Document::AllocatorType& allocator = _argv_4d5ef724_b464_11ea_891e_a85e451255ad.GetAllocator();
+            _argv_4d5ef724_b464_11ea_891e_a85e451255ad.SetArray();
             rapidjson::Value str_uuid(rapidjson::kStringType);
             str_uuid.SetString(uuid.c_str(), uuid.size());
-            _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad.PushBack(str_uuid, allocator);
-            _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad.PushBack(err, allocator);
-            call_module_method("test3_err", _argv_6b96bae7_b45d_11ea_9dda_a85e451255ad.GetArray());
+            _argv_4d5ef724_b464_11ea_891e_a85e451255ad.PushBack(str_uuid, allocator);
+            _argv_4d5ef724_b464_11ea_891e_a85e451255ad.PushBack(err, allocator);
+            call_module_method("test3_err", _argv_4d5ef724_b464_11ea_891e_a85e451255ad.GetArray());
         }
 
     };
@@ -235,8 +235,8 @@ namespace abelkhan
         signals<void(std::vector<test2> argv)> sig_test4;
         void test4(rapidjson::Value& inArray){
             std::vector<test2> _argv;
-            for(auto it_6b96bae8_b45d_11ea_ba4b_a85e451255ad = inArray[0].Begin(); it_6b96bae8_b45d_11ea_ba4b_a85e451255ad != inArray[0].End(); ++it_6b96bae8_b45d_11ea_ba4b_a85e451255ad){
-                _argv.push_back(test2::protcol_to_test2(*it_6b96bae8_b45d_11ea_ba4b_a85e451255ad));
+            for(auto it_4d5ef725_b464_11ea_b621_a85e451255ad = inArray[0].Begin(); it_4d5ef725_b464_11ea_b621_a85e451255ad != inArray[0].End(); ++it_4d5ef725_b464_11ea_b621_a85e451255ad){
+                _argv.push_back(test2::protcol_to_test2(*it_4d5ef725_b464_11ea_b621_a85e451255ad));
             }
             sig_test4.emit(_argv);
         }
@@ -245,4 +245,4 @@ namespace abelkhan
 
 }
 
-#endif //_h_test_6b9645b0_b45d_11ea_aec2_a85e451255ad_
+#endif //_h_test_4d5e5ae1_b464_11ea_97bf_a85e451255ad_

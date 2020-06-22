@@ -78,9 +78,18 @@ class module(object):
         self.module = []
         self.machine = None
 
+    def check_repeat_func(self):
+        func_list = []
+        for func_info in self.module:
+            name = func_info[0]
+            if name in func_list:
+                raise Exception("repeat func:" + name + " in module:" + self.name)
+            func_list.append(name)
+
     def push(self, ch):
         if ch == '}':
             self.machine = None
+            self.check_repeat_func()
             return True
 
         if self.machine is not None:
