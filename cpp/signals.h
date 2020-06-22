@@ -35,6 +35,10 @@ public:
 		slots_.erase(id);
 	}
 
+	bool empty(){
+		return slots_.empty();
+	}
+
 	void emit(Args... p)
 	{
 		std::lock_guard<std::mutex> l(slots_mutex_);
@@ -72,6 +76,10 @@ public:
 	{
 		std::lock_guard<std::mutex> l(slots_mutex_);
 		slots_.erase(id);
+	}
+
+	bool empty(){
+		return slots_.empty();
 	}
 
 	Rt emit(Args... p)

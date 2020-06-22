@@ -40,23 +40,13 @@ def gen(inputdir, outputdir):
         code += gen_import(pretreatment._import)
         code += genenum.genenum(pretreatment)
         code += genstruct.genstruct(pretreatment)
-        h_code_tmp, cpp_code_tmp = gencaller.gencaller(pretreatment)
-        code += h_code_tmp
+        code += gencaller.gencaller(pretreatment)
         code += genmodule.genmodule(pretreatment)
         code += "\n}\n\n"
         code += "#endif //_h_" + pretreatment.name + "_" + _uuid + "_\n"
 
-        cpp_code = "#include \"" + pretreatment.name + ".h\"\n\n"
-        cpp_code += "namespace abelkhan\n{\n\n"
-        cpp_code += cpp_code_tmp
-        cpp_code += "\n}\n"
-
         file = open(outputdir + '//' + pretreatment.name + ".h", 'w')
         file.write(code)
-        file.close()
-
-        file = open(outputdir + '//' + pretreatment.name + ".cpp", 'w')
-        file.write(cpp_code)
         file.close()
         
 if __name__ == '__main__':

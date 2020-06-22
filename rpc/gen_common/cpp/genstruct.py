@@ -27,6 +27,8 @@ def genmainstruct(struct_name, elems, dependent_struct, dependent_enum):
     for key, value in elems:
         code += "            " + value + " = _" + value + ";\n"
     code += "        }\n\n" 
+    code += "        " + struct_name + "() = default;\n\n"
+    code += "        " + struct_name + "(" + struct_name + "& value) = default;\n\n"
     return code
 
 def genstructprotocol(struct_name, elems, dependent_struct, dependent_enum):
