@@ -61,7 +61,7 @@ namespace abelkhan
     }
 
 /*this caller code is codegen by abelkhan codegen for c#*/
-    public class cb_test3
+    public class test_test3_cb
     {
         public delegate void test3_handle_cb(test1 t1);
         public event test3_handle_cb ontest3_cb;
@@ -94,13 +94,13 @@ namespace abelkhan
     }
 
 /*this cb code is codegen by abelkhan for c#*/
-    public class rsp_cb_test : abelkhan.Imodule {
-        public Dictionary<string, cb_test3> map_test3;
-        public rsp_cb_test(abelkhan.modulemng modules) : base("rsp_cb_test")
+    public class test_rsp_cb : abelkhan.Imodule {
+        public Dictionary<string, test_test3_cb> map_test3;
+        public test_rsp_cb(abelkhan.modulemng modules) : base("test_rsp_cb")
         {
             modules.reg_module(this);
 
-            map_test3 = new Dictionary<string, cb_test3>();
+            map_test3 = new Dictionary<string, test_test3_cb>();
             reg_method("test3_rsp", test3_rsp);
             reg_method("test3_err", test3_err);
         }
@@ -121,7 +121,7 @@ namespace abelkhan
     }
 
     public class test_caller : abelkhan.Icaller {
-        public static rsp_cb_test rsp_cb_test_handle = null;
+        public static test_rsp_cb rsp_cb_test_handle = null;
         public test_caller(abelkhan.Ichannel _ch, abelkhan.modulemng modules) : base("test", _ch)
         {
             if (rsp_cb_test_handle == null)
@@ -130,50 +130,50 @@ namespace abelkhan
             }
         }
 
-        public cb_test3 test3(test2 t2){
-            var uuid_321cd70f_b1d6_11ea_a7d3_a85e451255ad = System.Guid.NewGuid().ToString("N");
+        public test_test3_cb test3(test2 t2){
+            var uuid_6a9bce30_b45f_11ea_845b_a85e451255ad = System.Guid.NewGuid().ToString("N");
 
-            var _argv_321d734f_b1d6_11ea_84d0_a85e451255ad = new JArray();
-            _argv_321d734f_b1d6_11ea_84d0_a85e451255ad.Add(uuid_321cd70f_b1d6_11ea_a7d3_a85e451255ad);
-            _argv_321d734f_b1d6_11ea_84d0_a85e451255ad.Add(test2.test2_to_protcol(t2));
-            call_module_method("test3", _argv_321d734f_b1d6_11ea_84d0_a85e451255ad);
+            var _argv_6a9c6a70_b45f_11ea_9c28_a85e451255ad = new JArray();
+            _argv_6a9c6a70_b45f_11ea_9c28_a85e451255ad.Add(uuid_6a9bce30_b45f_11ea_845b_a85e451255ad);
+            _argv_6a9c6a70_b45f_11ea_9c28_a85e451255ad.Add(test2.test2_to_protcol(t2));
+            call_module_method("test3", _argv_6a9c6a70_b45f_11ea_9c28_a85e451255ad);
 
-            var cb_test3_obj = new cb_test3();
-            rsp_cb_test_handle.map_test3.Add(uuid_321cd70f_b1d6_11ea_a7d3_a85e451255ad, cb_test3_obj);
+            var cb_test3_obj = new test_test3_cb();
+            rsp_cb_test_handle.map_test3.Add(uuid_6a9bce30_b45f_11ea_845b_a85e451255ad, cb_test3_obj);
             return cb_test3_obj;
         }
 
         public void test4(List<test2> argv){
-            var _argv_321d7350_b1d6_11ea_9a48_a85e451255ad = new JArray();
-            var _array_321d7351_b1d6_11ea_8782_a85e451255ad = new JArray();
-            foreach(var v_321d7352_b1d6_11ea_8278_a85e451255ad in argv){
-                _array_321d7351_b1d6_11ea_8782_a85e451255ad.Add(test2.test2_to_protcol(v_321d7352_b1d6_11ea_8278_a85e451255ad));
+            var _argv_6a9c6a71_b45f_11ea_94d6_a85e451255ad = new JArray();
+            var _array_6a9c6a72_b45f_11ea_a45e_a85e451255ad = new JArray();
+            foreach(var v_6a9c6a73_b45f_11ea_8023_a85e451255ad in argv){
+                _array_6a9c6a72_b45f_11ea_a45e_a85e451255ad.Add(test2.test2_to_protcol(v_6a9c6a73_b45f_11ea_8023_a85e451255ad));
             }
-            _argv_321d7350_b1d6_11ea_9a48_a85e451255ad.Add(_array_321d7351_b1d6_11ea_8782_a85e451255ad);
-            call_module_method("test4", _argv_321d7350_b1d6_11ea_9a48_a85e451255ad);
+            _argv_6a9c6a71_b45f_11ea_94d6_a85e451255ad.Add(_array_6a9c6a72_b45f_11ea_a45e_a85e451255ad);
+            call_module_method("test4", _argv_6a9c6a71_b45f_11ea_94d6_a85e451255ad);
         }
 
     }
 /*this module code is codegen by abelkhan codegen for c#*/
-    public class rsp_test3 : abelkhan.Response {
+    public class test_test3_rsp : abelkhan.Response {
         private string uuid;
-        public rsp_test3(abelkhan.Ichannel _ch, String _uuid) : base("rsp_cb_test", _ch)
+        public test_test3_rsp(abelkhan.Ichannel _ch, String _uuid) : base("test_rsp_cb", _ch)
         {
             uuid = _uuid;
         }
 
         public void rsp(test1 t1){
-            var _argv_321d7353_b1d6_11ea_8ddf_a85e451255ad = new JArray();
-            _argv_321d7353_b1d6_11ea_8ddf_a85e451255ad.Add(uuid);
-            _argv_321d7353_b1d6_11ea_8ddf_a85e451255ad.Add(test1.test1_to_protcol(t1));
-            call_module_method("test3_rsp", _argv_321d7353_b1d6_11ea_8ddf_a85e451255ad);
+            var _argv_6a9c6a74_b45f_11ea_8a38_a85e451255ad = new JArray();
+            _argv_6a9c6a74_b45f_11ea_8a38_a85e451255ad.Add(uuid);
+            _argv_6a9c6a74_b45f_11ea_8a38_a85e451255ad.Add(test1.test1_to_protcol(t1));
+            call_module_method("test3_rsp", _argv_6a9c6a74_b45f_11ea_8a38_a85e451255ad);
         }
 
         public void err(Int32 err){
-            var _argv_321d7354_b1d6_11ea_8979_a85e451255ad = new JArray();
-            _argv_321d7354_b1d6_11ea_8979_a85e451255ad.Add(this.uuid);
-            _argv_321d7354_b1d6_11ea_8979_a85e451255ad.Add(err);
-            call_module_method("test3_err", _argv_321d7354_b1d6_11ea_8979_a85e451255ad);
+            var _argv_6a9c6a75_b45f_11ea_b636_a85e451255ad = new JArray();
+            _argv_6a9c6a75_b45f_11ea_b636_a85e451255ad.Add(this.uuid);
+            _argv_6a9c6a75_b45f_11ea_b636_a85e451255ad.Add(err);
+            call_module_method("test3_err", _argv_6a9c6a75_b45f_11ea_b636_a85e451255ad);
         }
 
     }
@@ -190,28 +190,28 @@ namespace abelkhan
         }
 
         public delegate void cb_test3_handle(test2 t2);
-        public event cb_test3_handle ontest3;
+        public event cb_test3_handle on_test3;
 
         public void test3(JArray inArray){
             var _cb_uuid = (String)inArray[0];
             var _t2 = test2.protcol_to_test2(inArray[1]);
-            rsp = new rsp_test3(current_ch, _cb_uuid);
-            if (ontest3 != null){
-                ontest3(_t2);
+            rsp = new test_test3_rsp(current_ch, _cb_uuid);
+            if (on_test3 != null){
+                on_test3(_t2);
             }
             rsp = null;
         }
 
         public delegate void cb_test4_handle(List<test2> argv);
-        public event cb_test4_handle ontest4;
+        public event cb_test4_handle on_test4;
 
         public void test4(JArray inArray){
             var _argv = new List<test2>();
-            foreach(var v_321d7355_b1d6_11ea_9b6e_a85e451255ad in inArray[0]){
-                _argv.Add(test2.protcol_to_test2(v_321d7355_b1d6_11ea_9b6e_a85e451255ad));
+            foreach(var v_6a9c6a76_b45f_11ea_9a9e_a85e451255ad in inArray[0]){
+                _argv.Add(test2.protcol_to_test2(v_6a9c6a76_b45f_11ea_9a9e_a85e451255ad));
             }
-            if (ontest4 != null){
-                ontest4(_argv);
+            if (on_test4 != null){
+                on_test4(_argv);
             }
         }
 

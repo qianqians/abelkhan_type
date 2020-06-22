@@ -175,15 +175,16 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "            rsp = nullptr;\n"
             code_func += "        }\n\n"
 
-            rsp_code += "        class " + module_name + "_" + func_name + "_rsp : Response {\n"
-            rsp_code += "        private:\n"
-            rsp_code += "            std::string uuid;\n\n"
-            rsp_code += "        public:\n"
-            rsp_code += "            " + module_name + "_" + func_name + "_rsp(std::shared_ptr<Ichannel> _ch, std::string _uuid) : Response(_ch){\n"
-            rsp_code += "                uuid = _uuid;\n"
-            rsp_code += "            }\n\n"
+            rsp_code += "    class " + module_name + "_"  + func_name + "_rsp : Response {\n"
+            rsp_code += "    private:\n"
+            rsp_code += "        std::string uuid;\n\n"
+            rsp_code += "    public:\n"
+            rsp_code += "        " + module_name + "_"  + func_name + "_rsp(std::shared_ptr<Ichannel> _ch, std::string _uuid) : Response(\"" + module_name + "_rsp_cb\", _ch)\n"
+            rsp_code += "        {\n"
+            rsp_code += "            uuid = _uuid;\n"
+            rsp_code += "        }\n\n"
 
-            rsp_code += "            void rsp("
+            rsp_code += "        void rsp("
             for _type, _name in i[4]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
@@ -192,44 +193,47 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "){\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            rsp_code += "                rapidjson::Document _argv_" + _argv_uuid + ";\n"
-            rsp_code += "                rapidjson::Document::AllocatorType& allocator = _argv_" + _argv_uuid + ".GetAllocator();\n"
-            rsp_code += "                _argv_" + _argv_uuid + ".SetArray();\n"
+            rsp_code += "            rapidjson::Document _argv_" + _argv_uuid + ";\n"
+            rsp_code += "            rapidjson::Document::AllocatorType& allocator = _argv_" + _argv_uuid + ".GetAllocator();\n"
+            rsp_code += "            _argv_" + _argv_uuid + ".SetArray();\n"
+            rsp_code += "            rapidjson::Value str_uuid(rapidjson::kStringType);\n"
+            rsp_code += "            str_uuid.SetString(uuid.c_str(), uuid.size());\n"
+            rsp_code += "            _argv_" + _argv_uuid + ".PushBack(str_uuid, allocator);\n"
             for _type, _name in i[4]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_  == tools.TypeType.Int32 or type_ == tools.TypeType.Int64 or type_ == tools.TypeType.Uint32 or type_ == tools.TypeType.Uint64 or type_ == tools.TypeType.Float or type_ == tools.TypeType.Double or type_ == tools.TypeType.Bool:
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(" + _name + ", allocator);\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(" + _name + ", allocator);\n"
                 elif type_ == tools.TypeType.String:
-                    rsp_code += "                rapidjson::Value str_" + _name + "(rapidjson::kStringType);\n"
-                    rsp_code += "                str_" + _name + ".SetString(" + _name + ".c_str(), " + _name + ".size());\n"
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(str_" + _name + ", allocator);\n"
+                    rsp_code += "            rapidjson::Value str_" + _name + "(rapidjson::kStringType);\n"
+                    rsp_code += "            str_" + _name + ".SetString(" + _name + ".c_str(), " + _name + ".size());\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(str_" + _name + ", allocator);\n"
                 elif type_ == tools.TypeType.Custom:
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "), allocator);\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "), allocator);\n"
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
-                    rsp_code += "                rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
+                    rsp_code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "                for(auto v_" + _v_uuid + " : _name){\n"
+                    rsp_code += "            for(auto v_" + _v_uuid + " : _name){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Int32 or array_type_ == tools.TypeType.Int64 or array_type_ == tools.TypeType.Uint32 or array_type_ == tools.TypeType.Uint64 or array_type_ == tools.TypeType.Float or array_type_ == tools.TypeType.Double or array_type_ == tools.TypeType.Bool:
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(v_" + _v_uuid + ", allocator);\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(v_" + _v_uuid + ", allocator);\n"
                     elif type_ == tools.TypeType.String:
-                        rsp_code += "                    rapidjson::Value str_" + _v_uuid + "(rapidjson::kStringType);\n"
-                        rsp_code += "                    str_" + _v_uuid + ".SetString(v_" + _v_uuid + ".c_str(), v_" + _v_uuid + ".size());\n"
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(str_" + _v_uuid + ", allocator);\n"
+                        rsp_code += "                rapidjson::Value str_" + _v_uuid + "(rapidjson::kStringType);\n"
+                        rsp_code += "                str_" + _v_uuid + ".SetString(v_" + _v_uuid + ".c_str(), v_" + _v_uuid + ".size());\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(str_" + _v_uuid + ", allocator);\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(" + array_type + "::" + array_type + "_to_protcol(v_" + _v_uuid + "), allocator);\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(" + array_type + "::" + array_type + "_to_protcol(v_" + _v_uuid + "), allocator);\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
-                    rsp_code += "                }\n"                                                     
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
-            rsp_code += "                call_module_method(emRpcType::EM_RPC_TYPE_RSP, uuid, _argv_" + _argv_uuid + ".GetArray());\n"
-            rsp_code += "            }\n\n"
+                    rsp_code += "            }\n"                                                     
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
+            rsp_code += "            call_module_method(\"" + func_name + "_rsp\", _argv_" + _argv_uuid + ".GetArray());\n"
+            rsp_code += "        }\n\n"
 
-            rsp_code += "            void err("
+            rsp_code += "        void err("
             count = 0
             for _type, _name in i[6]:
                 rsp_code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
@@ -239,43 +243,46 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             rsp_code += "){\n"
             _argv_uuid = str(uuid.uuid1())
             _argv_uuid = '_'.join(_argv_uuid.split('-'))
-            rsp_code += "                rapidjson::Document _argv_" + _argv_uuid + ";\n"
-            rsp_code += "                rapidjson::Document::AllocatorType& allocator = _argv_" + _argv_uuid + ".GetAllocator();\n"
-            rsp_code += "                _argv_" + _argv_uuid + ".SetArray();\n"
+            rsp_code += "            rapidjson::Document _argv_" + _argv_uuid + ";\n"
+            rsp_code += "            rapidjson::Document::AllocatorType& allocator = _argv_" + _argv_uuid + ".GetAllocator();\n"
+            rsp_code += "            _argv_" + _argv_uuid + ".SetArray();\n"
+            rsp_code += "            rapidjson::Value str_uuid(rapidjson::kStringType);\n"
+            rsp_code += "            str_uuid.SetString(uuid.c_str(), uuid.size());\n"
+            rsp_code += "            _argv_" + _argv_uuid + ".PushBack(str_uuid, allocator);\n"
             for _type, _name in i[6]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 if type_  == tools.TypeType.Int32 or type_ == tools.TypeType.Int64 or type_ == tools.TypeType.Uint32 or type_ == tools.TypeType.Uint64 or type_ == tools.TypeType.Float or type_ == tools.TypeType.Double or type_ == tools.TypeType.Bool:
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(" + _name + ", allocator);\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(" + _name + ", allocator);\n"
                 elif type_ == tools.TypeType.String:
-                    rsp_code += "                rapidjson::Value str_" + _name + "(rapidjson::kStringType);\n"
-                    rsp_code += "                str_" + _name + ".SetString(" + _name + ".c_str(), " + _name + ".size());\n"
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(str_" + _name + ", allocator);\n"
+                    rsp_code += "            rapidjson::Value str_" + _name + "(rapidjson::kStringType);\n"
+                    rsp_code += "            str_" + _name + ".SetString(" + _name + ".c_str(), " + _name + ".size());\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(str_" + _name + ", allocator);\n"
                 elif type_ == tools.TypeType.Custom:
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "), allocator);\n"
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(" + _type + "::" + _type + "_to_protcol(" + _name + "), allocator);\n"
                 elif type_ == tools.TypeType.Array:
                     _array_uuid = str(uuid.uuid1())
                     _array_uuid = '_'.join(_array_uuid.split('-'))
-                    rsp_code += "                rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
+                    rsp_code += "            rapidjson::Value _array_" + _array_uuid + "(rapidjson::kArrayType);\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "                for(auto v_" + _v_uuid + " : _name){\n"
+                    rsp_code += "            for(auto v_" + _v_uuid + " : _name){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Int32 or array_type_ == tools.TypeType.Int64 or array_type_ == tools.TypeType.Uint32 or array_type_ == tools.TypeType.Uint64 or array_type_ == tools.TypeType.Float or array_type_ == tools.TypeType.Double or array_type_ == tools.TypeType.Bool:
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(v_" + _v_uuid + ", allocator);\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(v_" + _v_uuid + ", allocator);\n"
                     elif type_ == tools.TypeType.String:
-                        rsp_code += "                    rapidjson::Value str_" + _v_uuid + "(rapidjson::kStringType);\n"
-                        rsp_code += "                    str_" + _v_uuid + ".SetString(v_" + _v_uuid + ".c_str(), v_" + _v_uuid + ".size());\n"
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(str_" + _v_uuid + ", allocator);\n"
+                        rsp_code += "                rapidjson::Value str_" + _v_uuid + "(rapidjson::kStringType);\n"
+                        rsp_code += "                str_" + _v_uuid + ".SetString(v_" + _v_uuid + ".c_str(), v_" + _v_uuid + ".size());\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(str_" + _v_uuid + ", allocator);\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        rsp_code += "                    _array_" + _array_uuid + ".PushBack(" + array_type + "::" + array_type + "_to_protcol(v_" + _v_uuid + "), allocator);\n"
+                        rsp_code += "                _array_" + _array_uuid + ".PushBack(" + array_type + "::" + array_type + "_to_protcol(v_" + _v_uuid + "), allocator);\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
-                    rsp_code += "                }\n"                                                     
-                    rsp_code += "                _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
-            rsp_code += "                call_module_method(emRpcType::EM_RPC_TYPE_ERR, uuid, _argv_" + _argv_uuid + ".GetArray());\n"
-            rsp_code += "            }\n\n"
-            rsp_code += "        };\n\n"
+                    rsp_code += "            }\n"                                                     
+                    rsp_code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
+            rsp_code += "            call_module_method(\"" + func_name + "_err\", _argv_" + _argv_uuid + ".GetArray());\n"
+            rsp_code += "        }\n\n"
+            rsp_code += "    };\n\n"
 
         else:
             raise "func:%s wrong rpc type:%s must req or ntf" % (func_name, i[1])
@@ -283,7 +290,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
     code_constructor_end = "        }\n\n"
     code = "    };\n"
         
-    return code_constructor + code_constructor_cb + code_constructor_end + rsp_code + code_func + code
+    return rsp_code + code_constructor + code_constructor_cb + code_constructor_end + code_func + code
         
 
 def genmodule(pretreatment):

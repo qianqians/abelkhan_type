@@ -7,15 +7,30 @@ import uuid
 import tools
 
 def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
+    cb_func = ""
+
+    cb_code = "/*this cb code is codegen by abelkhan for cpp*/\n"
+    cb_code += "    class " + module_name + "_rsp_cb : public Imodule, public std::enable_shared_from_this<" + module_name + "_rsp_cb>{\n"
+    cb_code += "    public:\n"
+    cb_code_constructor = "        " + module_name + "_rsp_cb() : Imodule(\"" + module_name + "_rsp_cb\")\n"
+    cb_code_constructor += "        {\n"
+    cb_code_constructor += "        }\n\n"
+    cb_code_constructor += "        void Init(std::shared_ptr<modulemng> modules){\n"
+    cb_code_constructor += "            modules->reg_module(std::static_pointer_cast<Imodule>(shared_from_this()));\n\n"
+    cb_code_section = ""
+
     code = "    class " + module_name + "_caller : Icaller {\n"
-    code += "    private:\n"
-    code += "        std::shared_ptr<modulemng> modules;\n\n"
     code += "    public:\n"
-    code += "        " + module_name + "_caller(std::shared_ptr<Ichannel> _ch, std::shared_ptr<modulemng> _modules) : Icaller(\"" + module_name + "\", _ch)\n"
+    code += "        static std::shared_ptr<" + module_name + "_rsp_cb> rsp_cb_" + module_name + "_handle;\n"
+    code += "        " + module_name + "_caller(std::shared_ptr<Ichannel> _ch, std::shared_ptr<modulemng> modules) : Icaller(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
-    code += "            modules = _modules;\n"
+    code += "            if (rsp_cb_" + module_name + "_handle == nullptr){\n"
+    code += "                rsp_cb_" + module_name + "_handle = std::make_shared<" + module_name + "_rsp_cb>();\n"
+    code += "                rsp_cb_" + module_name + "_handle->Init(modules);\n"
+    code += "            }\n"
     code += "        }\n\n"
-    
+    cpp_code = "std::shared_ptr<" + module_name + "_rsp_cb> " + module_name + "_caller::rsp_cb_" + module_name + "_handle = nullptr;\n"
+
     for i in funcs:
         func_name = i[0]
 
@@ -64,189 +79,190 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code += "            }\n"                                                     
                     code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
-            code += "            call_module_method(emRpcType::EM_RPC_TYPE_NTF, \"" + func_name + "\", _argv_" + _argv_uuid + ".GetArray());\n"
+            code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ".GetArray());\n"
             code += "        }\n\n"
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
-            code += "        class " + module_name + "_" + func_name + "_cb{\n"
-            code += "        public:\n"
-            code += "            signals<void("
+            cb_func += "    class " + module_name + "_" + func_name + "_cb {\n"
+            cb_func += "    public:\n"
+            cb_func += "        signals<void("
             count = 0
             for _type, _name in i[4]:
-                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
                 if count < len(i[4]):
-                    code += ", "
-            code += ")> sig_" + func_name + "_cb;\n"
+                    cb_func += ", "
+            cb_func += ")> sig_" + func_name + "_cb;\n"
             
-            code += "            signals<void("
+            cb_func += "        signals<void("
             count = 0
             for _type, _name in i[6]:
-                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
                 count = count + 1
                 if count < len(i[6]):
-                    code += ", "
-            code += ")> sig_" + func_name + "_err;\n\n"
+                    cb_func += ", "
+            cb_func += ")> sig_" + func_name + "_err;\n\n"
             
-            code += "            void callBack(std::function<void("
+            cb_func += "        void callBack(std::function<void("
             count = 0
             for _type, _name in i[4]:
-                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
                 count = count + 1
                 if count < len(i[4]):
-                    code += ", "
-            code += ")> cb, std::function<void("
+                    cb_func += ", "
+            cb_func += ")> cb, std::function<void("
             count = 0
             for _type, _name in i[6]:
-                code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
+                cb_func += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name
                 count = count + 1
                 if count < len(i[6]):
-                    code += ", "
-            code += ")> err){\n"
-            code += "                sig_" + func_name + "_cb.connect(cb);\n"
-            code += "                sig_" + func_name + "_err.connect(err);\n"
-            code += "            }\n\n"
+                    cb_func += ", "
+            cb_func += ")> err)\n        {\n"
+            cb_func += "            sig_" + func_name + "_cb.connect(cb);\n"
+            cb_func += "            sig_" + func_name + "_err.connect(err);\n"
+            cb_func += "        }\n\n"
+            cb_func += "    };\n\n"
 
-            code += "            static void rsp(std::shared_ptr<" + module_name + "_" + func_name + "_cb> self, rapidjson::Value& inArray){\n"
-            count = 0
+            cb_code += "        std::map<std::string, std::shared_ptr<" + module_name + "_"  + func_name + "_cb> > map_" + func_name + ";\n"
+            cb_code_constructor += "            reg_method(\"" + func_name + "_rsp\", std::bind(&" + module_name + "_rsp_cb::" + func_name + "_rsp, this, std::placeholders::_1));\n"
+            cb_code_constructor += "            reg_method(\"" + func_name + "_err\", std::bind(&" + module_name + "_rsp_cb::" + func_name + "_err, this, std::placeholders::_1));\n"
+
+            cb_code_section += "        void " + func_name + "_rsp(rapidjson::Value& inArray){\n"
+            cb_code_section += "            auto uuid = inArray[0].GetString();\n"
+            count = 1 
             for _type, _name in i[4]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 _type_ = tools.convert_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Int32:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetInt();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetInt();\n"
                 elif type_ == tools.TypeType.Int64:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetInt64();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetInt64();\n"
                 elif type_ == tools.TypeType.Uint32:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetUint();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetUint();\n"
                 elif type_ == tools.TypeType.Uint64:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetUint64();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetUint64();\n"
                 elif type_ == tools.TypeType.Float:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetFloat();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetFloat();\n"
                 elif type_ == tools.TypeType.Double:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetDouble();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetDouble();\n"
                 elif type_ == tools.TypeType.Bool:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetBool();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetBool();\n"
                 elif type_ == tools.TypeType.String:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetString();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetString();\n"
                 elif type_ == tools.TypeType.Custom:
-                    code += "                auto _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    cb_code_section += "            auto _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     _array_type = tools.convert_type(array_type, dependent_struct, dependent_enum)
-                    code += "                std::vector<" + _array_type + "> _" + _name + ";\n"
+                    cb_code_section += "            std::vector<" + _array_type + "> _" + _name + ";\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "                for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it_" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it_" + _v_uuid + "){\n"
+                    cb_code_section += "            for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it_" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it_" + _v_uuid + "){\n"
                     if array_type_ == tools.TypeType.Int32:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetInt());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetInt());\n"
                     elif array_type_ == tools.TypeType.Int64:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetInt64());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetInt64());\n"
                     elif array_type_ == tools.TypeType.Uint32:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetUint());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetUint());\n"
                     elif array_type_ == tools.TypeType.Uint64:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetUint64());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetUint64());\n"
                     elif array_type_ == tools.TypeType.Float:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetFloat());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetFloat());\n"
                     elif array_type_ == tools.TypeType.Double:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetDouble());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetDouble());\n"
                     elif array_type_ == tools.TypeType.Bool:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetBool());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetBool());\n"
                     elif array_type_ == tools.TypeType.String:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code += "                    _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(it_" + _v_uuid + "));\n"
+                        cb_code_section += "                _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(it_" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
-                    code += "                }\n"
+                    cb_code_section += "            }\n"
                 count += 1
-            code += "                if (self == nullptr){\n"
-            code += "                    return;\n"
-            code += "                }\n"
-            code += "                if (self->sig_" + func_name + "_cb.empty()){\n"
-            code += "                    return;\n"
-            code += "                }\n"
-            code += "                self->sig_" + func_name + "_cb.emit("
+            cb_code_section += "            auto rsp = map_" + func_name + "[uuid];\n"
+            cb_code_section += "            if (rsp != nullptr){\n"
+            cb_code_section += "                rsp->sig_" + func_name + "_cb.emit("
             count = 0
             for _type, _name in i[4]:
-                code += "_" + _name
+                cb_code_section += "_" + _name
                 count = count + 1
                 if count < len(i[4]):
-                    code += ", "
-            code += ");\n"
-            code += "            }\n"
+                    cb_code_section += ", "
+            cb_code_section += ");\n"
+            cb_code_section += "                map_" + func_name + ".erase(uuid);\n"
+            cb_code_section += "            }\n"
+            cb_code_section += "        }\n"
 
-            code += "            static void err(std::shared_ptr<" + module_name + "_" + func_name + "_cb> self, rapidjson::Value& inArray){\n"
-            count = 0
+            cb_code_section += "        void " + func_name + "_err(rapidjson::Value& inArray){\n"
+            cb_code_section += "            auto uuid = inArray[0].GetString();\n"
+            count = 1 
             for _type, _name in i[6]:
                 type_ = tools.check_type(_type, dependent_struct, dependent_enum)
                 _type_ = tools.convert_type(_type, dependent_struct, dependent_enum)
                 if type_ == tools.TypeType.Int32:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetInt();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetInt();\n"
                 elif type_ == tools.TypeType.Int64:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetInt64();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetInt64();\n"
                 elif type_ == tools.TypeType.Uint32:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetUint();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetUint();\n"
                 elif type_ == tools.TypeType.Uint64:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetUint64();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetUint64();\n"
                 elif type_ == tools.TypeType.Float:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetFloat();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetFloat();\n"
                 elif type_ == tools.TypeType.Double:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetDouble();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetDouble();\n"
                 elif type_ == tools.TypeType.Bool:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetBool();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetBool();\n"
                 elif type_ == tools.TypeType.String:
-                    code += "                auto _" + _name + " = inArray[" + str(count) + "].GetString();\n"
+                    cb_code_section += "            auto _" + _name + " = inArray[" + str(count) + "].GetString();\n"
                 elif type_ == tools.TypeType.Custom:
-                    code += "                auto _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
+                    cb_code_section += "            auto _" + _name + " = " + _type + "::protcol_to_" + _type + "(inArray[" + str(count) + "]);\n"
                 elif type_ == tools.TypeType.Array:
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     _array_type = tools.convert_type(array_type, dependent_struct, dependent_enum)
-                    code += "                std::vector<" + _array_type + "> _" + _name + ";\n"
+                    cb_code_section += "            std::vector<" + _array_type + "> _" + _name + ";\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "                for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it_" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it_" + _v_uuid + "){\n"
+                    cb_code_section += "            for(auto it_" + _v_uuid + " = inArray[" + str(count) + "].Begin(); it_" + _v_uuid + " != inArray[" + str(count) + "].End(); ++it_" + _v_uuid + "){\n"
                     if array_type_ == tools.TypeType.Int32:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetInt());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetInt());\n"
                     elif array_type_ == tools.TypeType.Int64:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetInt64());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetInt64());\n"
                     elif array_type_ == tools.TypeType.Uint32:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetUint());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetUint());\n"
                     elif array_type_ == tools.TypeType.Uint64:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetUint64());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetUint64());\n"
                     elif array_type_ == tools.TypeType.Float:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetFloat());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetFloat());\n"
                     elif array_type_ == tools.TypeType.Double:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetDouble());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetDouble());\n"
                     elif array_type_ == tools.TypeType.Bool:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetBool());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetBool());\n"
                     elif array_type_ == tools.TypeType.String:
-                        code += "                    _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
+                        cb_code_section += "                _" + _name + ".push_back(it_" + _v_uuid + "->GetString());\n"
                     elif array_type_ == tools.TypeType.Custom:
-                        code += "                    _" + _name + ".push_back(" + array_type + "::protcol_to_" + array_type + "(it_" + _v_uuid + "));\n"
+                        cb_code_section += "                _" + _name + ".Add(" + array_type + "::protcol_to_" + array_type + "(it" + _v_uuid + "));\n"
                     elif array_type_ == tools.TypeType.Array:
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
-                    code += "                }\n"
+                    cb_code_section += "            }\n"
                 count += 1
-            code += "                if (self == nullptr){\n"
-            code += "                    return;\n"
-            code += "                }\n"
-            code += "                if (self->sig_" + func_name + "_err.empty()){\n"
-            code += "                    return;\n"
-            code += "                }\n"
-            code += "                self->sig_" + func_name + "_err.emit("
+            cb_code_section += "            auto rsp = map_" + func_name + "[uuid];\n"
+            cb_code_section += "            if (rsp != nullptr){\n"
+            cb_code_section += "                rsp->sig_" + func_name + "_err.emit("
             count = 0
             for _type, _name in i[6]:
-                code += "_" + _name
+                cb_code_section += "_" + _name
                 count = count + 1
                 if count < len(i[6]):
-                    code += ", "
-            code += ");\n"
-            code += "            }\n"
+                    cb_code_section += ", "
+            cb_code_section += ");\n"
+            cb_code_section += "                map_" + func_name + ".erase(uuid);\n"
+            cb_code_section += "            }\n"
+            cb_code_section += "        }\n\n"
 
-            code += "        };\n\n"
-
-            code += "        std::shared_ptr<" + module_name + "_" + func_name + "_cb> " + func_name + "("
+            code += "        std::shared_ptr<" + module_name + "_"  + func_name + "_cb> " + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -296,19 +312,22 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                         raise Exception("not support nested array:%s in func:%s" % (_type, func_name))
                     code += "            }\n"                                                     
                     code += "            _argv_" + _argv_uuid + ".PushBack(_array_" + _array_uuid + ", allocator);\n"
-            code += "            call_module_method(emRpcType::EM_RPC_TYPE_REQ, \"" + func_name + "\", _argv_" + _argv_uuid + ".GetArray());\n\n"
-
-            code += "            auto cb_" + func_name + "_obj = std::make_shared<" + module_name + "_" + func_name + "_cb>();\n"
-            code += "            modules->reg_callback_method(uuid_" + _cb_uuid_uuid + ", std::bind(&" + module_name + "_" + func_name + "_cb::rsp, cb_" + func_name + "_obj, std::placeholders::_1), std::bind(&" + module_name + "_" + func_name + "_cb::err, cb_" + func_name + "_obj, std::placeholders::_1));\n"
+            code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ".GetArray());\n\n"
+            code += "            auto cb_" + func_name + "_obj = std::make_shared<" + module_name + "_"  + func_name + "_cb>();\n"
+            code += "            rsp_cb_" + module_name + "_handle->map_" + func_name + ".insert(std::make_pair(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj));\n"
             code += "            return cb_" + func_name + "_obj;\n"
-            
             code += "        }\n\n"
+
         else:
             raise Exception("func:" + func_name + " wrong rpc type:" + i[1] + ", must req or ntf")
 
+    cb_code_constructor += "        }\n"
+    cb_code_section += "    };\n\n"
     code += "    };\n"
 
-    return code
+    h_code = cb_func + cb_code + cb_code_constructor + cb_code_section + code
+
+    return h_code, cpp_code
 
 def gencaller(pretreatment):
     dependent_struct = pretreatment.dependent_struct
@@ -317,7 +336,10 @@ def gencaller(pretreatment):
     modules = pretreatment.module
     
     h_code = "/*this caller code is codegen by abelkhan codegen for cpp*/\n"
+    cpp_cpde = "/*this caller code is codegen by abelkhan codegen for cpp*/\n"
     for module_name, funcs in modules.items():
-        h_code += gen_module_caller(module_name, funcs, dependent_struct, dependent_enum)
-        
-    return h_code
+        h_code_tmp, cpp_cpde_tmp = gen_module_caller(module_name, funcs, dependent_struct, dependent_enum)
+        h_code += h_code_tmp
+        cpp_cpde += cpp_cpde_tmp
+
+    return h_code, cpp_cpde

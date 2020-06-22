@@ -7,25 +7,21 @@ import uuid
 import tools
 
 def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
-    #code_begin = "import abelkhan = require(\"abelkhan\");"
-
     cb_func = ""
 
     cb_code = "/*this cb code is codegen by abelkhan for ts*/\n"
-    cb_code += "export class rsp_cb_" + module_name + " extends abelkhan.Imodule {\n"
+    cb_code += "export class " + module_name + "_rsp_cb extends abelkhan.Imodule {\n"
     cb_code_constructor = "    constructor(modules:abelkhan.modulemng){\n"
-    cb_code_constructor += "        super(\"rsp_cb_" + module_name + "\");\n"
+    cb_code_constructor += "        super(\"" + module_name + "_rsp_cb\");\n"
     cb_code_constructor += "        modules.reg_module(this);\n\n"
     cb_code_section = ""
 
-    
-    #code = "import uuidv1 = require('uuid/v1');\n"
-    code = "let rsp_cb_" + module_name + "_handle : rsp_cb_" + module_name + " | null = null;\n"
+    code = "let rsp_cb_" + module_name + "_handle : " + module_name + "_rsp_cb | null = null;\n"
     code += "export class " + module_name + "_caller extends abelkhan.Icaller {\n"
     code += "    constructor(_ch:any, modules:abelkhan.modulemng){\n"
     code += "        super(\"" + module_name + "\", _ch);\n"
     code += "        if (rsp_cb_" + module_name + "_handle == null){\n"
-    code += "            rsp_cb_" + module_name + "_handle = new rsp_cb_" + module_name + "(modules);\n"
+    code += "            rsp_cb_" + module_name + "_handle = new " + module_name + "_rsp_cb(modules);\n"
     code += "        }\n"
     code += "    }\n\n"
 
@@ -60,7 +56,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "        let _array_" + _array_uuid + ":any[] = [];\n"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "        for(let v_" + _v_uuid + " of _name){\n"
+                    code += "        for(let v_" + _v_uuid + " of " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
@@ -95,7 +91,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     err_fn += ", "
             err_fn += ")=>void"
 
-            cb_func += "export class cb_" + func_name + "{\n"
+            cb_func += "export class " + module_name + "_" + func_name + "_cb{\n"
             cb_func += "    public event_" + func_name + "_handle_cb : " + rsp_fn + " | null;\n"
             cb_func += "    public event_" + func_name + "_handle_err : " + err_fn + " | null;\n"
             
@@ -110,8 +106,8 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_func += "    }\n"
             cb_func += "}\n\n"
 
-            cb_code += "    public map_" + func_name + ":Map<string, cb_" + func_name + ">;\n"
-            cb_code_constructor += "        this.map_" + func_name + " = new Map<string, cb_" + func_name + ">();\n"
+            cb_code += "    public map_" + func_name + ":Map<string, " + module_name + "_" + func_name + "_cb>;\n"
+            cb_code_constructor += "        this.map_" + func_name + " = new Map<string, " + module_name + "_" + func_name + "_cb>();\n"
             cb_code_constructor += "        this.reg_method(\"" + func_name + "_rsp\", this." + func_name + "_rsp.bind(this));\n"
             cb_code_constructor += "        this.reg_method(\"" + func_name + "_err\", this." + func_name + "_err.bind(this));\n"
 
@@ -231,7 +227,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "        let _array_" + _array_uuid + ":any[] = [];"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    code += "        for(let v_" + _v_uuid + " of _name){\n"
+                    code += "        for(let v_" + _v_uuid + " of " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
@@ -247,7 +243,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "        }\n"                                                     
                     code += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
             code += "        this.call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n\n"
-            code += "        let cb_" + func_name + "_obj = new cb_" + func_name + "();\n"
+            code += "        let cb_" + func_name + "_obj = new " + module_name + "_" + func_name + "_cb();\n"
             code += "        if (rsp_cb_" + module_name + "_handle){\n"
             code += "            rsp_cb_" + module_name + "_handle.map_" + func_name + ".set(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n"
             code += "        }\n"

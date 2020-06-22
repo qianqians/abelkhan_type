@@ -31,7 +31,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[2]):
                     code_func += ", "
             code_func += ");\n"
-            code_func += "        public event cb_" + func_name + "_handle on" + func_name + ";\n\n"
+            code_func += "        public event cb_" + func_name + "_handle on_" + func_name + ";\n\n"
 
             code_func += "        public void " + func_name + "(JArray inArray){\n"
             count = 0 
@@ -59,8 +59,8 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            }\n"                                                     
                 count += 1
 
-            code_func += "            if (on" + func_name + " != null){\n"
-            code_func += "                on" + func_name + "("
+            code_func += "            if (on_" + func_name + " != null){\n"
+            code_func += "                on_" + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code_func += "_" + _name
@@ -81,7 +81,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                 if count < len(i[2]):
                     code_func += ", "
             code_func += ");\n"
-            code_func += "        public event cb_" + func_name + "_handle on" + func_name + ";\n\n"
+            code_func += "        public event cb_" + func_name + "_handle on_" + func_name + ";\n\n"
             
             code_func += "        public void " + func_name + "(JArray inArray){\n"
             code_func += "            var _cb_uuid = (String)inArray[0];\n"
@@ -110,9 +110,9 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "            }\n"                                                     
                 count += 1
 
-            code_func += "            rsp = new rsp_" + func_name + "(current_ch, _cb_uuid);\n"
-            code_func += "            if (on" + func_name + " != null){\n"
-            code_func += "                on" + func_name + "("
+            code_func += "            rsp = new " + module_name + "_" + func_name + "_rsp(current_ch, _cb_uuid);\n"
+            code_func += "            if (on_" + func_name + " != null){\n"
+            code_func += "                on_" + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code_func += "_" + _name
@@ -124,9 +124,9 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
             code_func += "            rsp = null;\n"
             code_func += "        }\n\n"
 
-            rsp_code += "    public class rsp_" + func_name + " : abelkhan.Response {\n"
+            rsp_code += "    public class " + module_name + "_" + func_name + "_rsp : abelkhan.Response {\n"
             rsp_code += "        private string uuid;\n"
-            rsp_code += "        public rsp_" + func_name + "(abelkhan.Ichannel _ch, String _uuid) : base(\"rsp_cb_" + module_name + "\", _ch)\n"
+            rsp_code += "        public " + module_name + "_" + func_name + "_rsp(abelkhan.Ichannel _ch, String _uuid) : base(\"" + module_name + "_rsp_cb\", _ch)\n"
             rsp_code += "        {\n"
             rsp_code += "            uuid = _uuid;\n"
             rsp_code += "        }\n\n"

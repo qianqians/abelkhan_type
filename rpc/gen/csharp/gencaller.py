@@ -7,21 +7,17 @@ import uuid
 import tools
 
 def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
-    #code_begin = "using System;"
-
     cb_func = ""
 
     cb_code = "/*this cb code is codegen by abelkhan for c#*/\n"
-    cb_code += "    public class rsp_cb_" + module_name + " : abelkhan.Imodule {\n"
-    cb_code_constructor = "        public rsp_cb_" + module_name + "(abelkhan.modulemng modules) : base(\"rsp_cb_" + module_name + "\")\n"
+    cb_code += "    public class " + module_name + "_rsp_cb : abelkhan.Imodule {\n"
+    cb_code_constructor = "        public " + module_name + "_rsp_cb(abelkhan.modulemng modules) : base(\"" + module_name + "_rsp_cb\")\n"
     cb_code_constructor += "        {\n"
     cb_code_constructor += "            modules.reg_module(this);\n\n"
     cb_code_section = ""
 
-    
-    #code = "import uuidv1 = require('uuid/v1');\n"
     code = "    public class " + module_name + "_caller : abelkhan.Icaller {\n"
-    code += "        public static rsp_cb_" + module_name + " rsp_cb_" + module_name + "_handle = null;\n"
+    code += "        public static " + module_name + "_rsp_cb rsp_cb_" + module_name + "_handle = null;\n"
     code += "        public " + module_name + "_caller(abelkhan.Ichannel _ch, abelkhan.modulemng modules) : base(\"" + module_name + "\", _ch)\n"
     code += "        {\n"
     code += "            if (rsp_cb_" + module_name + "_handle == null)\n            {\n"
@@ -70,7 +66,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n"
             code += "        }\n\n"
         elif i[1] == "req" and i[3] == "rsp" and i[5] == "err":
-            cb_func += "    public class cb_" + func_name + "\n    {\n"
+            cb_func += "    public class " + module_name + "_" + func_name + "_cb\n    {\n"
             cb_func += "        public delegate void " + func_name + "_handle_cb("
             count = 0
             for _type, _name in i[4]:
@@ -140,8 +136,8 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
 
             cb_func += "    }\n\n"
 
-            cb_code += "        public Dictionary<string, cb_" + func_name + "> map_" + func_name + ";\n"
-            cb_code_constructor += "            map_" + func_name + " = new Dictionary<string, cb_" + func_name + ">();\n"
+            cb_code += "        public Dictionary<string, " + module_name + "_" + func_name + "_cb> map_" + func_name + ";\n"
+            cb_code_constructor += "            map_" + func_name + " = new Dictionary<string, " + module_name + "_" + func_name + "_cb>();\n"
             cb_code_constructor += "            reg_method(\"" + func_name + "_rsp\", " + func_name + "_rsp);\n"
             cb_code_constructor += "            reg_method(\"" + func_name + "_err\", " + func_name + "_err);\n"
 
@@ -221,7 +217,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
             cb_code_section += "            map_" + func_name + ".Remove(uuid);\n"
             cb_code_section += "        }\n"
 
-            code += "        public cb_" + func_name + " " + func_name + "("
+            code += "        public " + module_name + "_" + func_name + "_cb " + func_name + "("
             count = 0
             for _type, _name in i[2]:
                 code += tools.convert_type(_type, dependent_struct, dependent_enum) + " " + _name 
@@ -260,7 +256,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
                     code += "            }\n"                                                     
                     code += "            _argv_" + _argv_uuid + ".Add(_array_" + _array_uuid + ");\n"
             code += "            call_module_method(\"" + func_name + "\", _argv_" + _argv_uuid + ");\n\n"
-            code += "            var cb_" + func_name + "_obj = new cb_" + func_name + "();\n"
+            code += "            var cb_" + func_name + "_obj = new " + module_name + "_" + func_name + "_cb();\n"
             code += "            rsp_cb_" + module_name + "_handle.map_" + func_name + ".Add(uuid_" + _cb_uuid_uuid + ", cb_" + func_name + "_obj);\n"
             code += "            return cb_" + func_name + "_obj;\n"
             code += "        }\n\n"

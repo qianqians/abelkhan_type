@@ -18,7 +18,7 @@ import gencaller
 import genmodule
 
 def gen_import(_import):
-    code = "import abelkhan = require(\"../../abelkhan_type/ts/abelkhan\");\n"
+    code = "import abelkhan = require(\"../../ts/abelkhan\");\n"
     code += "import { v1 as uuidv1 } from 'uuid'\n"
     for _i in _import:
         code += "import " + _i + " = require(\"./" + _i + "\");\n"

@@ -37,15 +37,6 @@ namespace abelkhan{
         return str;
     }
 
-    enum class emRpcType
-    {
-        EM_RPC_TYPE_NTF = 1,
-        EM_RPC_TYPE_REQ = 2,
-        EM_RPC_TYPE_RSP = 3,
-        EM_RPC_TYPE_ERR = 4,
-    };
-
-
     class Exception : public std::exception {
     public:
         Exception(std::string _err) : std::exception() {
@@ -68,13 +59,10 @@ namespace abelkhan{
             ch = _ch;
         }
 
-        void call_module_method(emRpcType rpctype, std::string methodname, rapidjson::Value argvs){
+        void call_module_method(std::string methodname, rapidjson::Value argvs){
             rapidjson::Document _event;
             _event.SetArray();
             rapidjson::Document::AllocatorType& allocator = _event.GetAllocator();
-            rapidjson::Value num_rpctype(rapidjson::kNumberType);
-            num_rpctype.SetInt((int)rpctype);
-            _event.PushBack(num_rpctype, allocator);
             rapidjson::Value str_methodname(rapidjson::kStringType);
             str_methodname.SetString(methodname.c_str(), methodname.size());
             _event.PushBack(str_methodname, allocator);
@@ -99,36 +87,10 @@ namespace abelkhan{
         std::shared_ptr<Ichannel> ch;
     };
 
-    class Response{
+    class Response : public Icaller {
     public:
-        Response(std::shared_ptr<Ichannel> _ch) {
-            ch = _ch;
+        Response(std::string _module_name, std::shared_ptr<Ichannel> _ch) : Icaller(_module_name, _ch) {
         }
-
-        void call_module_method(emRpcType rpctype, std::string uuid, rapidjson::Value argvs){
-            rapidjson::Document _event;
-            _event.SetArray();
-            rapidjson::Document::AllocatorType& allocator = _event.GetAllocator();
-            rapidjson::Value num_rpctype(rapidjson::kNumberType);
-            num_rpctype.SetInt((int)rpctype);
-            _event.PushBack(num_rpctype, allocator);
-            rapidjson::Value str_methodname(rapidjson::kStringType);
-            str_methodname.SetString(uuid.c_str(), uuid.size());
-            _event.PushBack(str_methodname, allocator);
-            _event.PushBack(argvs, allocator);
-            
-            try
-            {
-                ch->push(_event);
-            }
-            catch (std::exception err)
-            {
-                throw new Exception(err.what());
-            }
-        }
-
-    private:
-        std::shared_ptr<Ichannel> ch;
     };
 
     class Imodule
@@ -152,13 +114,13 @@ namespace abelkhan{
             current_ch = _ch;
             try
             {
-                std::string func_name = _event[2].GetString();
+                std::string func_name = _event[1].GetString();
                 auto it_func = events.find(func_name);
                 if (it_func != events.end())
                 {
                     try
                     {
-                        it_func->second(_event[3]);
+                        it_func->second(_event[2]);
                     }
                     catch (std::exception e)
                     {
@@ -190,73 +152,22 @@ namespace abelkhan{
         }
 
         void reg_module(std::shared_ptr<Imodule> _module){
-            ntf_req_module_set.insert(std::make_pair(_module->module_name, _module));
+            module_set.insert(std::make_pair(_module->module_name, _module));
         }
 
         void unreg_module(std::shared_ptr<Imodule> _module){
-            ntf_req_module_set.erase(_module->module_name);
-        }
-
-        void reg_callback_method(std::string cb_uuid, std::function<void(rapidjson::Value& doc)> rsp, std::function<void(rapidjson::Value& doc)> err){
-            rsp_method_set.insert(std::make_pair(cb_uuid, rsp));
-            err_method_set.insert(std::make_pair(cb_uuid, err));
+            module_set.erase(_module->module_name);
         }
 
         void process_event(std::shared_ptr<Ichannel> _ch, rapidjson::Document& _event) {
             try {
-                emRpcType rpctype = (emRpcType)_event[0].GetInt();
-
-                if (rpctype == emRpcType::EM_RPC_TYPE_NTF || rpctype == emRpcType::EM_RPC_TYPE_REQ){
-                    std::string module_name = _event[1].GetString();
-                    auto it_module = ntf_req_module_set.find(module_name);
-                    if (it_module != ntf_req_module_set.end()) {
-                        it_module->second->process_event(_ch, _event);
-                    }
-                    else {
-                        throw new Exception(format("do not have a module named:%s", module_name));
-                    }
+                std::string module_name = _event[0].GetString();
+                auto it_module = module_set.find(module_name);
+                if (it_module != module_set.end()) {
+                    it_module->second->process_event(_ch, _event);
                 }
-                else if (rpctype == emRpcType::EM_RPC_TYPE_RSP){
-                    std::string uuid = _event[1].GetString();
-                    auto it_func = rsp_method_set.find(uuid);
-                    if (it_func != rsp_method_set.end())
-                    {
-                        try
-                        {
-                            it_func->second(_event[2]);
-                            rsp_method_set.erase(uuid);
-                            err_method_set.erase(uuid);
-                        }
-                        catch (std::exception e)
-                        {
-                            throw new Exception(format("rsp callback uuid:%s System.Exception:%s", uuid, e.what()));
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception(format("do not have a rsp callback function:%s", uuid));
-                    }
-                }
-                else if (rpctype == emRpcType::EM_RPC_TYPE_ERR){
-                    std::string uuid = _event[1].GetString();
-                    auto it_func = err_method_set.find(uuid);
-                    if (it_func != err_method_set.end())
-                    {
-                        try
-                        {
-                            it_func->second(_event[2]);
-                            rsp_method_set.erase(uuid);
-                            err_method_set.erase(uuid);
-                        }
-                        catch (std::exception e)
-                        {
-                            throw new Exception(format("err callback uuid:%s System.Exception:%s", uuid, e.what()));
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception(format("do not have a err callback function:%s", uuid));
-                    }
+                else {
+                    throw new Exception(format("do not have a module named:%s", module_name));
                 }
             }
             catch (std::exception e)
@@ -266,9 +177,7 @@ namespace abelkhan{
         }
 
     private:
-        std::map<std::string, std::shared_ptr<Imodule> > ntf_req_module_set;
-        std::map<std::string, std::function<void(rapidjson::Value& doc)> > rsp_method_set;
-        std::map<std::string, std::function<void(rapidjson::Value& doc)> > err_method_set;
+        std::map<std::string, std::shared_ptr<Imodule> > module_set;
     };
 }
 

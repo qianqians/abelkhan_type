@@ -7,7 +7,6 @@ import uuid
 import tools
 
 def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
-    #code_constructor = "import abelkhan = require(\"abelkhan\");\n"
     code_constructor = "export class " + module_name + "_module extends abelkhan.Imodule {\n"
     code_constructor += "    private modules:abelkhan.modulemng;\n"
     code_constructor += "    constructor(modules:abelkhan.modulemng){\n"
@@ -128,17 +127,17 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     code_func += "        _argv_" + _argv_uuid + ".push(_array_" + _array_uuid + ");\n"
                 count += 1
 
-            code_func += "        this.rsp = new rsp_" + func_name + "(this.current_ch, _cb_uuid);\n"
-            code_func += "        if (cb_" + func_name + "){\n"
-            code_func += "            cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
+            code_func += "        this.rsp = new " + module_name + "_" + func_name + "_rsp(this.current_ch, _cb_uuid);\n"
+            code_func += "        if (this.cb_" + func_name + "){\n"
+            code_func += "            this.cb_" + func_name + ".apply(null, _argv_" + _argv_uuid + ");\n"
             code_func += "        }\n"
             code_func += "        this.rsp = null;\n"
             code_func += "    }\n\n"
 
-            rsp_code += "export class rsp_" + func_name + " extends abelkhan.Icaller {\n"
+            rsp_code += "export class " + module_name + "_" + func_name + "_rsp extends abelkhan.Icaller {\n"
             rsp_code += "    private uuid : string;\n"
             rsp_code += "    constructor(_ch:any, _uuid:string){\n"
-            rsp_code += "        super(\"rsp_cb_" + module_name + "\", _ch);\n"
+            rsp_code += "        super(\"" + module_name + "_rsp_cb\", _ch);\n"
             rsp_code += "        this.uuid = _uuid;\n"
             rsp_code += "    }\n\n"
 
@@ -168,7 +167,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "        let _array_" + _array_uuid + ":any[] = [];"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "        for(let v_" + _v_uuid + " of _name){\n"
+                    rsp_code += "        for(let v_" + _v_uuid + " of " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
@@ -213,7 +212,7 @@ def gen_module_module(module_name, funcs, dependent_struct, dependent_enum):
                     rsp_code += "        let _array_" + _array_uuid + ":any[] = [];"
                     _v_uuid = str(uuid.uuid1())
                     _v_uuid = '_'.join(_v_uuid.split('-'))
-                    rsp_code += "        for(let v_" + _v_uuid + " of _name){\n"
+                    rsp_code += "        for(let v_" + _v_uuid + " of " + _name + "){\n"
                     array_type = _type[:-2]
                     array_type_ = tools.check_type(array_type, dependent_struct, dependent_enum)
                     if array_type_ == tools.TypeType.Original:
