@@ -16,7 +16,7 @@ def gen_module_caller(module_name, funcs, dependent_struct, dependent_enum):
     cb_code_constructor += "        modules.reg_module(this);\n\n"
     cb_code_section = ""
 
-    code = "let rsp_cb_" + module_name + "_handle : " + module_name + "_rsp_cb | null = null;\n"
+    code = "export let rsp_cb_" + module_name + "_handle : " + module_name + "_rsp_cb | null = null;\n"
     code += "export class " + module_name + "_caller extends abelkhan.Icaller {\n"
     code += "    constructor(_ch:any, modules:abelkhan.modulemng){\n"
     code += "        super(\"" + module_name + "\", _ch);\n"

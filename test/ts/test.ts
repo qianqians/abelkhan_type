@@ -90,23 +90,23 @@ export class test_rsp_cb extends abelkhan.Imodule {
     }
     public test3_rsp(inArray:any[]){
         let uuid = inArray[0];
-        let _argv_18e268de_b461_11ea_83c3_a85e451255ad:any[] = [];
-        _argv_18e268de_b461_11ea_83c3_a85e451255ad.push(protcol_to_test1(inArray[1]));
+        let _argv_0db60891_b50c_11ea_9cea_a85e451255ad:any[] = [];
+        _argv_0db60891_b50c_11ea_9cea_a85e451255ad.push(protcol_to_test1(inArray[1]));
         var rsp = this.map_test3.get(uuid);
-        rsp.event_test3_handle_cb.apply(null, _argv_18e268de_b461_11ea_83c3_a85e451255ad);
+        rsp.event_test3_handle_cb.apply(null, _argv_0db60891_b50c_11ea_9cea_a85e451255ad);
         this.map_test3.delete(uuid);
     }
     public test3_err(inArray:any[]){
         let uuid = inArray[0];
-        let _argv_18e30521_b461_11ea_b8af_a85e451255ad:any[] = [];
-        _argv_18e30521_b461_11ea_b8af_a85e451255ad.push(inArray[1]);
+        let _argv_0db8c7b0_b50c_11ea_a498_a85e451255ad:any[] = [];
+        _argv_0db8c7b0_b50c_11ea_a498_a85e451255ad.push(inArray[1]);
         var rsp = this.map_test3.get(uuid);
-        rsp.event_test3_handle_err.apply(null, _argv_18e30521_b461_11ea_b8af_a85e451255ad);
+        rsp.event_test3_handle_err.apply(null, _argv_0db8c7b0_b50c_11ea_a498_a85e451255ad);
         this.map_test3.delete(uuid);
     }
 }
 
-let rsp_cb_test_handle : test_rsp_cb | null = null;
+export let rsp_cb_test_handle : test_rsp_cb | null = null;
 export class test_caller extends abelkhan.Icaller {
     constructor(_ch:any, modules:abelkhan.modulemng){
         super("test", _ch);
@@ -116,27 +116,27 @@ export class test_caller extends abelkhan.Icaller {
     }
 
     public test3(t2:test2){
-        let uuid_18e30522_b461_11ea_8495_a85e451255ad = uuidv1();
+        let uuid_0db8c7b1_b50c_11ea_805f_a85e451255ad = uuidv1();
 
-        let _argv_18e30523_b461_11ea_834f_a85e451255ad:any[] = [uuid_18e30522_b461_11ea_8495_a85e451255ad];
-        _argv_18e30523_b461_11ea_834f_a85e451255ad.push(test2_to_protcol(t2));
-        this.call_module_method("test3", _argv_18e30523_b461_11ea_834f_a85e451255ad);
+        let _argv_0db8c7b2_b50c_11ea_92af_a85e451255ad:any[] = [uuid_0db8c7b1_b50c_11ea_805f_a85e451255ad];
+        _argv_0db8c7b2_b50c_11ea_92af_a85e451255ad.push(test2_to_protcol(t2));
+        this.call_module_method("test3", _argv_0db8c7b2_b50c_11ea_92af_a85e451255ad);
 
         let cb_test3_obj = new test_test3_cb();
         if (rsp_cb_test_handle){
-            rsp_cb_test_handle.map_test3.set(uuid_18e30522_b461_11ea_8495_a85e451255ad, cb_test3_obj);
+            rsp_cb_test_handle.map_test3.set(uuid_0db8c7b1_b50c_11ea_805f_a85e451255ad, cb_test3_obj);
         }
         return cb_test3_obj;
     }
 
     public test4(argv:test2[]){
-        let _argv_18e30524_b461_11ea_839e_a85e451255ad:any[] = [];
-        let _array_18e30525_b461_11ea_a2b7_a85e451255ad:any[] = [];
-        for(let v_18e30526_b461_11ea_992a_a85e451255ad of argv){
-            _array_18e30525_b461_11ea_a2b7_a85e451255ad.push(test2_to_protcol(v_18e30526_b461_11ea_992a_a85e451255ad));
+        let _argv_0db8c7b3_b50c_11ea_9423_a85e451255ad:any[] = [];
+        let _array_0db8c7b4_b50c_11ea_a49e_a85e451255ad:any[] = [];
+        for(let v_0db8c7b5_b50c_11ea_83d1_a85e451255ad of argv){
+            _array_0db8c7b4_b50c_11ea_a49e_a85e451255ad.push(test2_to_protcol(v_0db8c7b5_b50c_11ea_83d1_a85e451255ad));
         }
-        _argv_18e30524_b461_11ea_839e_a85e451255ad.push(_array_18e30525_b461_11ea_a2b7_a85e451255ad);
-        this.call_module_method("test4", _argv_18e30524_b461_11ea_839e_a85e451255ad);
+        _argv_0db8c7b3_b50c_11ea_9423_a85e451255ad.push(_array_0db8c7b4_b50c_11ea_a49e_a85e451255ad);
+        this.call_module_method("test4", _argv_0db8c7b3_b50c_11ea_9423_a85e451255ad);
     }
 
 }
@@ -149,15 +149,15 @@ export class test_test3_rsp extends abelkhan.Icaller {
     }
 
     public rsp(t1:test1){
-        let _argv_18e30528_b461_11ea_8b52_a85e451255ad:any[] = [this.uuid];
-        _argv_18e30528_b461_11ea_8b52_a85e451255ad.push(test1_to_protcol(t1));
-        this.call_module_method("test3_rsp", _argv_18e30528_b461_11ea_8b52_a85e451255ad);
+        let _argv_0db8c7b7_b50c_11ea_ab12_a85e451255ad:any[] = [this.uuid];
+        _argv_0db8c7b7_b50c_11ea_ab12_a85e451255ad.push(test1_to_protcol(t1));
+        this.call_module_method("test3_rsp", _argv_0db8c7b7_b50c_11ea_ab12_a85e451255ad);
     }
 
     public err(err:number){
-        let _argv_18e30529_b461_11ea_bdb3_a85e451255ad:any[] = [this.uuid];
-        _argv_18e30529_b461_11ea_bdb3_a85e451255ad.push(err);
-        this.call_module_method("test3_err", _argv_18e30529_b461_11ea_bdb3_a85e451255ad);
+        let _argv_0db8c7b8_b50c_11ea_9efe_a85e451255ad:any[] = [this.uuid];
+        _argv_0db8c7b8_b50c_11ea_9efe_a85e451255ad.push(err);
+        this.call_module_method("test3_err", _argv_0db8c7b8_b50c_11ea_9efe_a85e451255ad);
     }
 
 }
@@ -180,24 +180,24 @@ export class test_module extends abelkhan.Imodule {
     public cb_test3 : (t2:test2)=>void | null;
     test3(inArray:any[]){
         let _cb_uuid = inArray[0];
-        let _argv_18e30527_b461_11ea_b308_a85e451255ad:any[] = [];
-        _argv_18e30527_b461_11ea_b308_a85e451255ad.push(protcol_to_test2(inArray[1]));
+        let _argv_0db8c7b6_b50c_11ea_a04a_a85e451255ad:any[] = [];
+        _argv_0db8c7b6_b50c_11ea_a04a_a85e451255ad.push(protcol_to_test2(inArray[1]));
         this.rsp = new test_test3_rsp(this.current_ch, _cb_uuid);
         if (this.cb_test3){
-            this.cb_test3.apply(null, _argv_18e30527_b461_11ea_b308_a85e451255ad);
+            this.cb_test3.apply(null, _argv_0db8c7b6_b50c_11ea_a04a_a85e451255ad);
         }
         this.rsp = null;
     }
 
     public cb_test4 : (argv:test2[])=>void | null;
     test4(inArray:any[]){
-        let _argv_18e3052a_b461_11ea_9776_a85e451255ad:any[] = [];
-        let _array_18e3052b_b461_11ea_83b1_a85e451255ad:any[] = [];        for(let v_18e3052c_b461_11ea_8b24_a85e451255ad of inArray[0]){
-            _array_18e3052b_b461_11ea_83b1_a85e451255ad.push(protcol_to_test2(v_18e3052c_b461_11ea_8b24_a85e451255ad));
+        let _argv_0db8c7b9_b50c_11ea_8904_a85e451255ad:any[] = [];
+        let _array_0db8c7ba_b50c_11ea_af5a_a85e451255ad:any[] = [];        for(let v_0db8c7bb_b50c_11ea_94df_a85e451255ad of inArray[0]){
+            _array_0db8c7ba_b50c_11ea_af5a_a85e451255ad.push(protcol_to_test2(v_0db8c7bb_b50c_11ea_94df_a85e451255ad));
         }
-        _argv_18e3052a_b461_11ea_9776_a85e451255ad.push(_array_18e3052b_b461_11ea_83b1_a85e451255ad);
+        _argv_0db8c7b9_b50c_11ea_8904_a85e451255ad.push(_array_0db8c7ba_b50c_11ea_af5a_a85e451255ad);
         if (this.cb_test4){
-            this.cb_test4.apply(null, _argv_18e3052a_b461_11ea_9776_a85e451255ad);
+            this.cb_test4.apply(null, _argv_0db8c7b9_b50c_11ea_8904_a85e451255ad);
         }
     }
 
