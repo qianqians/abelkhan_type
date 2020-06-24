@@ -76,13 +76,11 @@ namespace abelkhan
             {
                 String func_name = (String)_event[1];
 
-                if (events.ContainsKey(func_name))
+                if (events.TryGetValue(func_name, out on_event method))
                 {
-                    on_event method = events[func_name];
                     try
                     {
                         method((JArray)_event[2]);
-                        current_ch = null;
                     }
                     catch (System.Exception e)
                     {
@@ -97,6 +95,10 @@ namespace abelkhan
             catch (System.Exception e)
             {
                 throw new abelkhan.Exception(string.Format("System.Exception:{0}", e));
+            }
+            finally
+            {
+                current_ch = null;
             }
         }
 
@@ -125,9 +127,13 @@ namespace abelkhan
         public void process_event(Ichannel _ch, JArray _event){
             try{
                 String module_name = (String)_event[0];
-                if (module_set.ContainsKey(module_name)){
-                    var _module = module_set[module_name];
+                if (module_set.TryGetValue(module_name, out Imodule _module))
+                {
                     _module.process_event(_ch, _event);
+                }
+                else
+                {
+                    throw new abelkhan.AbelkhanException(string.Format("do not have a module named::{0}", module_name));
                 }
             }
             catch (System.Exception e)
